@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model MenuSection {
+  id        String      @id @default(cuid())
+  key       String      @unique        // e.g. "HOT_DOGS"
+  title     String
+  items     MenuItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model MenuItem {
+  id        String      @id @default(cuid())
+  section   MenuSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  sectionId String
+
+  code      String      // what you're editing in "Item ID (internal)"
+  label     String
+  price     String
+  active    Boolean     @default(true)
+  sortOrder Int         @default(0)
+
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@unique([sectionId, code])
+}
