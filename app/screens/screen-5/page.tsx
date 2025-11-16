@@ -1,3 +1,4 @@
+// app/screens/screen-5/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -11,23 +12,70 @@ type MenuItem = {
 
 type MenuSections = Record<string, MenuItem[]>;
 
+const SCREEN_ID = "screen-5";
+
 function useMenuSections() {
   const [menuSections, setMenuSections] = useState<MenuSections>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let closed = false;
+
     async function load() {
       try {
-        const res = await fetch("/api/menu");
+        const res = await fetch("/api/menu", {
+          cache: "no-store",
+        });
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
         const data = await res.json();
+        if (closed) return;
         setMenuSections(data.menuSections || {});
       } catch (err) {
         console.error("[screen-5] failed to load menu", err);
       } finally {
-        setLoading(false);
+        if (!closed) {
+          setLoading(false);
+        }
       }
     }
+
+    // initial load
     load();
+
+    // connect to SSE stream for this screen
+    const es = new EventSource(`/api/stream/${SCREEN_ID}`);
+
+    es.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (closed) return;
+
+        // from broadcastMenuUpdated()
+        if (data && data.type === "menuUpdated") {
+          load(); // re-fetch menu data so this screen updates live
+          return;
+        }
+
+        // ignore simple "connected" hello
+        if (data && data.type === "connected") {
+          return;
+        }
+      } catch (err) {
+        console.error("[screen-5] bad SSE data", err);
+      }
+    };
+
+    es.onerror = (err) => {
+      console.error("[screen-5] SSE error", err);
+      // optional: could es.close() and retry after a delay
+    };
+
+    return () => {
+      closed = true;
+      es.close();
+    };
   }, []);
 
   return { menuSections, loading };
@@ -57,13 +105,29 @@ export default function Screen5Page() {
       {loading && <div className="empty-state">LOADING MENU…</div>}
 
       {!loading && (
-        <div className="screen-root">
+        <>
           {/* HERO IMAGE STRIP */}
           <div className="hero-strip">
-            <img className="hero-photo hero-photo-left" src="/img/hero-kid.png" alt=" " />
-            <img className="hero-photo hero-photo-burger" src="/img/burgers-burger.png" alt=" " />
-            <img className="hero-photo hero-photo-fries" src="/img/sides-fries.png" alt=" " />
-            <img className="hero-photo hero-photo-hotdogs" src="/img/hotdogs-hotdogs.png" alt=" " />
+            <img
+              className="hero-photo hero-photo-left"
+              src="/img/hero-kid.png"
+              alt=" "
+            />
+            <img
+              className="hero-photo hero-photo-burger"
+              src="/img/burgers-burger.png"
+              alt=" "
+            />
+            <img
+              className="hero-photo hero-photo-fries"
+              src="/img/sides-fries.png"
+              alt=" "
+            />
+            <img
+              className="hero-photo hero-photo-hotdogs"
+              src="/img/hotdogs-hotdogs.png"
+              alt=" "
+            />
           </div>
 
           {/* TWO-COLUMN MENU */}
@@ -107,7 +171,7 @@ export default function Screen5Page() {
               </div>
             </section>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

@@ -1,3 +1,4 @@
+// app/screens/screen-3/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -11,23 +12,70 @@ type MenuItem = {
 
 type MenuSections = Record<string, MenuItem[]>;
 
+const SCREEN_ID = "screen-3";
+
 function useMenuSections() {
   const [menuSections, setMenuSections] = useState<MenuSections>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let closed = false;
+
     async function load() {
       try {
-        const res = await fetch("/api/menu");
+        const res = await fetch("/api/menu", {
+          cache: "no-store",
+        });
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
         const data = await res.json();
+        if (closed) return;
         setMenuSections(data.menuSections || {});
       } catch (err) {
-        console.error(err);
+        console.error("[screen-3] failed to load menu", err);
       } finally {
-        setLoading(false);
+        if (!closed) {
+          setLoading(false);
+        }
       }
     }
+
+    // initial load
     load();
+
+    // connect to SSE stream for this screen
+    const es = new EventSource(`/api/stream/${SCREEN_ID}`);
+
+    es.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (closed) return;
+
+        // from broadcastMenuUpdated()
+        if (data && data.type === "menuUpdated") {
+          load(); // re-fetch menu data so this screen updates live
+          return;
+        }
+
+        // ignore simple "connected" hello
+        if (data && data.type === "connected") {
+          return;
+        }
+      } catch (err) {
+        console.error("[screen-3] bad SSE data", err);
+      }
+    };
+
+    es.onerror = (err) => {
+      console.error("[screen-3] SSE error", err);
+      // optional - could es.close() and retry after a delay
+    };
+
+    return () => {
+      closed = true;
+      es.close();
+    };
   }, []);
 
   return { menuSections, loading };
@@ -59,7 +107,7 @@ export default function Screen3Page() {
 
       {!loading && (
         <div className="screen-columns">
-          {/* LEFT – SIDES */}
+          {/* LEFT - SIDES */}
           <section className="menu-board">
             <header className="menu-header">
               <div className="menu-header-label">SIDES</div>
@@ -71,7 +119,7 @@ export default function Screen3Page() {
             </div>
           </section>
 
-          {/* RIGHT – SIDES */}
+          {/* RIGHT - SIDES */}
           <section className="menu-board">
             <header className="menu-header">
               <div className="menu-header-label">SIDES</div>

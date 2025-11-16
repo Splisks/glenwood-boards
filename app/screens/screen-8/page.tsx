@@ -3,30 +3,77 @@
 
 import { useEffect, useState } from "react";
 
+const SCREEN_ID = "screen-8";
+
 export default function Screen8Page() {
   const [images, setImages] = useState<string[]>([]);
   const [index, setIndex] = useState(0);
 
-  // Load list of images from /public/img/slider via API
+  // Load list of images from /api/slider and subscribe to SSE
   useEffect(() => {
+    let closed = false;
+
     async function load() {
       try {
-        const res = await fetch("/api/slider");
+        const res = await fetch("/api/slider", {
+          cache: "no-store",
+        });
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
         const data = await res.json();
         const list: string[] = Array.isArray(data.images) ? data.images : [];
+
+        if (closed) return;
 
         if (list.length > 0) {
           setImages(list);
           // start on a random image so each load feels different
           const start = Math.floor(Math.random() * list.length);
           setIndex(start);
+        } else {
+          setImages([]);
+          setIndex(0);
         }
       } catch (err) {
         console.error("[screen-8] failed to load slider images", err);
       }
     }
 
+    // initial load
     load();
+
+    // connect to SSE stream for this screen
+    const es = new EventSource(`/api/stream/${SCREEN_ID}`);
+
+    es.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (closed) return;
+
+        // Generic "content changed" ping – reload slider list
+        if (data?.type === "menuUpdated" || data?.type === "sliderUpdated") {
+          load();
+          return;
+        }
+
+        // ignore hello messages
+        if (data?.type === "connected") {
+          return;
+        }
+      } catch (err) {
+        console.error("[screen-8] bad SSE data", err);
+      }
+    };
+
+    es.onerror = (err) => {
+      console.error("[screen-8] SSE error", err);
+    };
+
+    return () => {
+      closed = true;
+      es.close();
+    };
   }, []);
 
   // Rotate through images if we have more than 1
@@ -41,9 +88,7 @@ export default function Screen8Page() {
   }, [images]);
 
   const currentSlide =
-    images.length > 0
-      ? images[index]
-      : "/img/history-1.png"; // fallback if folder empty
+    images.length > 0 ? images[index] : "/img/history-1.png"; // fallback if folder empty
 
   return (
     <div className="screen-root">
