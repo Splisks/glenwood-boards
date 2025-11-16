@@ -1,0 +1,45 @@
+# ───────── Node / Dependencies ─────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ───────── Next.js build output ─────────
+.next/
+out/
+.vercel/
+.next-static/
+
+# ───────── Environment files ─────────
+.env
+.env.*          # .env.local, .env.development, etc.
+!.env.example   # keep a template env file tracked if you create one
+
+# ───────── Logs ─────────
+logs/
+*.log
+*.log.*
+npm-debug.log*
+debug.log
+
+# ───────── OS junk ─────────
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
+Icon?
+._*
+
+# ───────── Editor / IDE ─────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ───────── Misc build / cache ─────────
+*.tsbuildinfo
+.next-tmp/
+.cache/
+coverage/
+assets/
