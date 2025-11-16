@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Glenwood Boards – Menu Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0b1120;
+      color: #e5e7eb;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .card {
+      background: #020617;
+      border-radius: 14px;
+      padding: 20px 22px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+      width: 100%;
+      max-width: 720px;
+      border: 1px solid #1f2937;
+    }
+    h1 {
+      margin: 0 0 4px;
+      font-size: 20px;
+    }
+    p {
+      margin: 0 0 12px;
+      font-size: 13px;
+      color: #9ca3af;
+    }
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    label {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    select {
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 13px;
+      outline: none;
+    }
+    select:focus {
+      border-color: #60a5fa;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 4px;
+    }
+    th, td {
+      border-bottom: 1px solid #111827;
+      padding: 6px 4px;
+      font-size: 13px;
+    }
+    th {
+      text-align: left;
+      color: #9ca3af;
+      font-weight: 500;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 5px 7px;
+      border-radius: 6px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 13px;
+      box-sizing: border-box;
+    }
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #60a5fa;
+    }
+    .actions {
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+    button {
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: #9ca3af;
+      border: 1px solid #4b5563;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #22c55e);
+      color: white;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.45);
+    }
+    .btn-danger {
+      background: #b91c1c;
+      color: white;
+    }
+    .status {
+      margin-top: 6px;
+      font-size: 12px;
+    }
+    .status.ok {
+      color: #6ee7b7;
+    }
+    .status.err {
+      color: #fca5a5;
+    }
+    .pill-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+    .pill {
+      padding: 2px 8px;
+      font-size: 11px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      color: #9ca3af;
+    }
+    .pill strong {
+      color: #e5e7eb;
+    }
+    .small {
+      font-size: 11px;
+      color: #6b7280;
+    }
+    .checkbox-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Menu Admin</h1>
+    <p>Edit menu sections – add, remove, rename items, or change prices. Toggle items inactive instead of deleting if you just want to hide them.</p>
+
+    <div class="pill-row">
+      <span class="pill">Editing section: <strong id="sectionLabel">—</strong></span>
+      <span class="pill small">Inactive items are hidden from boards but kept here.</span>
+    </div>
+
+    <div class="toolbar">
+      <div>
+        <label for="sectionSelect">Section</label><br />
+        <select id="sectionSelect"></select>
+      </div>
+      <div class="small">
+        HOT_DOGS, BURGERS, SIDES_LEFT, etc.
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 25%;">Item ID <span class="small">(internal)</span></th>
+          <th>Label</th>
+          <th style="width: 14%;">Price</th>
+          <th style="width: 10%;">Active</th>
+          <th style="width: 60px;">Remove</th>
+        </tr>
+      </thead>
+      <tbody id="rowsBody">
+      </tbody>
+    </table>
+
+    <div class="actions">
+      <button id="addRowBtn" class="btn-ghost">+ Add item</button>
+      <button id="saveBtn" class="btn-primary">Save all changes</button>
+    </div>
+
+    <div id="status" class="status"></div>
+  </div>
+
+  <script>
+    let menuSections = {};
+    let currentSectionId = null;
+
+    const sectionSelect = document.getElementById("sectionSelect");
+    const rowsBody = document.getElementById("rowsBody");
+    const sectionLabelEl = document.getElementById("sectionLabel");
+    const statusEl = document.getElementById("status");
+    const addRowBtn = document.getElementById("addRowBtn");
+    const saveBtn = document.getElementById("saveBtn");
+
+    function uid() {
+      return Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4);
+    }
+
+    async function loadMenu() {
+      try {
+        const res = await fetch("/api/menu");
+        const data = await res.json();
+        menuSections = data.menuSections || {};
+
+        // populate section dropdown
+        sectionSelect.innerHTML = "";
+        Object.keys(menuSections).forEach((key) => {
+          const opt = document.createElement("option");
+          opt.value = key;
+          opt.textContent = key;
+          sectionSelect.appendChild(opt);
+        });
+
+        currentSectionId = sectionSelect.value || Object.keys(menuSections)[0] || null;
+        renderSection();
+        statusEl.textContent = "";
+        statusEl.className = "status";
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Failed to load menu data.";
+        statusEl.className = "status err";
+      }
+    }
+
+    function renderSection() {
+      if (!currentSectionId) {
+        rowsBody.innerHTML = "";
+        sectionLabelEl.textContent = "—";
+        return;
+      }
+
+      sectionLabelEl.textContent = currentSectionId;
+      const items = menuSections[currentSectionId] || [];
+      rowsBody.innerHTML = "";
+
+      items.forEach((item, index) => {
+        const tr = document.createElement("tr");
+
+        // ensure id exists
+        if (!item.id) {
+          item.id = currentSectionId.toLowerCase() + "-" + (index + 1) + "-" + uid();
+        }
+
+        // ID cell
+        const tdId = document.createElement("td");
+        const idInput = document.createElement("input");
+        idInput.type = "text";
+        idInput.value = item.id;
+        idInput.addEventListener("input", (e) => {
+          item.id = e.target.value.trim();
+        });
+        tdId.appendChild(idInput);
+        tr.appendChild(tdId);
+
+        // Label cell
+        const tdLabel = document.createElement("td");
+        const labelInput = document.createElement("input");
+        labelInput.type = "text";
+        labelInput.value = item.label || "";
+        labelInput.addEventListener("input", (e) => {
+          item.label = e.target.value;
+        });
+        tdLabel.appendChild(labelInput);
+        tr.appendChild(tdLabel);
+
+        // Price cell
+        const tdPrice = document.createElement("td");
+        const priceInput = document.createElement("input");
+        priceInput.type = "text";
+        priceInput.value = item.price || "";
+        priceInput.addEventListener("input", (e) => {
+          item.price = e.target.value;
+        });
+        tdPrice.appendChild(priceInput);
+        tr.appendChild(tdPrice);
+
+        // Active cell
+        const tdActive = document.createElement("td");
+        const activeWrap = document.createElement("div");
+        activeWrap.className = "checkbox-wrap";
+        const activeInput = document.createElement("input");
+        activeInput.type = "checkbox";
+        activeInput.checked = item.active !== false; // default true
+        activeInput.addEventListener("change", (e) => {
+          item.active = e.target.checked; // true/false
+        });
+        activeWrap.appendChild(activeInput);
+        tdActive.appendChild(activeWrap);
+        tr.appendChild(tdActive);
+
+        // Remove cell
+        const tdRemove = document.createElement("td");
+        const removeBtn = document.createElement("button");
+        removeBtn.textContent = "✕";
+        removeBtn.className = "btn-danger";
+        removeBtn.style.padding = "3px 8px";
+        removeBtn.addEventListener("click", () => {
+          items.splice(index, 1);
+          renderSection();
+        });
+        tdRemove.appendChild(removeBtn);
+        tr.appendChild(tdRemove);
+
+        rowsBody.appendChild(tr);
+      });
+    }
+
+    sectionSelect.addEventListener("change", () => {
+      currentSectionId = sectionSelect.value;
+      renderSection();
+      statusEl.textContent = "";
+      statusEl.className = "status";
+    });
+
+    addRowBtn.addEventListener("click", () => {
+      if (!currentSectionId) return;
+      const items = menuSections[currentSectionId] || (menuSections[currentSectionId] = []);
+      items.push({
+        id: currentSectionId.toLowerCase() + "-custom-" + uid(),
+        label: "",
+        price: "",
+        active: true
+      });
+      renderSection();
+    });
+
+    saveBtn.addEventListener("click", async () => {
+      statusEl.textContent = "";
+      statusEl.className = "status";
+      saveBtn.disabled = true;
+
+      try {
+        const res = await fetch("/api/menu", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ menuSections })
+        });
+
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || "Failed to save menu.");
+        }
+
+        const data = await res.json();
+        menuSections = data.menuSections || menuSections;
+
+        // 🔧 IMPORTANT: re-render to re-bind inputs to the new data
+        renderSection();
+
+        statusEl.textContent = "Menu saved. Boards will refresh automatically.";
+        statusEl.className = "status ok";
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = err.message || "Error saving menu.";
+        statusEl.className = "status err";
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
+
+    loadMenu();
+  </script>
+</body>
+</html>

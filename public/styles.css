@@ -1,0 +1,346 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--rk-bg, #007bff);
+  font-family: "BD_Cartoon_Shout", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+#root {
+  height: 100%;
+}
+
+@font-face {
+  font-family: "BD_Cartoon_Shout";
+  src: url("/fonts/BD_Cartoon_Shout.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.screen-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: #ffffff;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* Make the grid area fill available height */
+.screen-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  height: 100%;
+  /* Let it grow inside screen-root */
+  flex: 1;
+}
+
+@media (max-width: 900px) {
+  .screen-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Each board fills its grid cell */
+.menu-board {
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* important so flex children can shrink if needed */
+}
+
+.column-header {
+  background: var(--rk-header-bg, #00cb31);
+  color: var(--rk-header-text, #ffffff);
+  border: 2px solid var(--rk-header-border, #000000);
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.menu-header {
+  background: var(--rk-header-bg, #00cb31);
+  color: var(--rk-header-text, #ffffff);
+  text-align: center;
+  padding: 12px 8px 2px 8px;
+  border-radius: 6px;
+  border: 3px solid var(--rk-header-border, #000000);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 3.6rem;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* This area will stretch and distribute the rows */
+.menu-items {
+  margin-top: 18px;
+  padding: 12px 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-items-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;  /* this gives you the top→bottom fill */
+}
+
+/* footer area – noticeCard / socialCard etc. */
+.menu-items-footer {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end; /* keep block in bottom-right corner */
+  padding-right: 8px;
+}
+
+/* Rows themselves no longer need bottom margin, spacing comes from flex */
+.menu-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 0;
+  font-size: 2.35rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.menu-row-label {
+  color: var(--rk-row-text, #ffffff);
+}
+
+.menu-row-price {
+  text-align: right;
+  white-space: nowrap;
+  padding-right: 4px;
+  font-variant-numeric: tabular-nums;
+  color: var(--rk-price-text, #ffffff);
+}
+
+/* Empty state still centers nicely when no items */
+.empty-state {
+  text-align: center;
+  margin-top: 0;
+  font-size: 1.25rem;
+  color: #e4f0ff;
+  flex: 1;   /* center it vertically when inside .menu-items */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-hero {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 16px;
+  height: 210px;
+  margin-bottom: 12px;
+}
+
+
+.menu-hero-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  transform-origin: center;
+}
+
+.menu-paragraph {
+  text-align: center;
+  font-size: 2.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+  margin-bottom: 8px;
+}
+
+.menu-paragraph--small {
+  font-size: 1.6rem;
+}
+
+.menu-divider {
+  height: 6px;
+  margin: 18px auto;
+  width: 80%;
+  border-radius: 999px;
+  background: #00cb31;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.45);
+}
+
+.menu-subheader {
+  margin-top: 18px;
+  margin-bottom: 10px;
+  padding: 8px 12px 4px;
+  border-radius: 6px;
+  border: 3px solid #000;
+  background: #00cb31;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 3.2rem;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.menu-toppings-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px 32px;
+  margin-top: 12px;
+  font-size: 2.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* Social Media & Coke */
+
+.social-card {
+  margin-top: auto;      /* stays at bottom of the column */
+  max-width: 100%;
+}
+
+/* Row that holds both images */
+.social-card-inner {
+  display: flex;
+  align-items: center;   /* vertically center both */
+  justify-content: center; /* center them within the row */
+  gap: 18px;
+}
+
+/* “Follow us” panel */
+.social-card-image {
+  display: block;
+  max-height: clamp(130px, 18vh, 190px);
+  width: auto;
+  border-radius: 18px;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
+}
+
+/* Coke logo – same height as panel */
+.social-card-logo {
+  display: block;
+  max-height: clamp(130px, 18vh, 190px);
+  width: auto;
+  filter: drop-shadow(4px 4px 0 rgba(0, 0, 0, 0.45));
+}
+
+/* Food Safety Notice */
+
+.notice-card {
+  margin-top: auto;              /* push to bottom of the column */
+  align-self: stretch;
+  padding: 18px 24px;
+  border-radius: 20px;
+  border: 4px solid #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  background: var(--rk-notice-bg, #007bff);
+  color: var(--rk-notice-text, #fff);
+}
+
+.notice-card-main {
+  font-size: 1.4rem;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+  line-height: 1.25;
+}
+
+.notice-card-sub {
+  font-size: 1rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Info / promo cards on screen-8 */
+
+.info-card {
+  margin-top: 18px;
+  padding: 18px 24px;
+  border-radius: 24px;
+  border: 4px solid #ffffff;
+  background: rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.info-card-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+  line-height: 1.2;
+}
+
+.info-card-subtitle {
+  font-size: 1.4rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.info-card-images {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.info-card-image {
+  max-height: 300px;
+  width: auto;
+  border-radius: 12px;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
+}
+
+.info-card-body {
+  font-size: 1.3rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.info-card-logos {
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.info-card-logo {
+  max-height: 54px;
+  width: auto;
+}
+
+/* accents if you use them */
+.badge-accent {
+  background: var(--rk-accent, #007bff);
+  color: #fff;
+}
+
+/* Smooth slideshow fade for history photos */
+.slideshow-fade {
+  animation: historyFadeIn 1.2s ease-in-out;
+}
+
+@keyframes historyFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
