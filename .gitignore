@@ -12,8 +12,12 @@ out/
 .next-static/
 
 # ───────── Environment files ─────────
+# env files
 .env
-.env.*          # .env.local, .env.development, etc.
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
 !.env.example   # keep a template env file tracked if you create one
 
 # ───────── Logs ─────────
