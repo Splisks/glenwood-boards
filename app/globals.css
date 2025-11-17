@@ -317,13 +317,17 @@ body {
 .info-card-images {
   display: flex;
   justify-content: center;
+  align-items: center;       /* vertically center inside the fixed area */
   gap: 12px;
   flex-wrap: wrap;
+  min-height: 300px;         /* 👈 keeps the block from shrinking between slides */
 }
 
+/* Slider image */
 .info-card-image {
-  max-height: 300px;
+  max-height: clamp(220px, 30vh, 320px);
   width: auto;
+  object-fit: contain;
   border-radius: 12px;
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
 }
