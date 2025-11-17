@@ -126,13 +126,10 @@ export default function Screen8Page() {
 
     const id = setInterval(() => {
       setIndex((prev) => (prev + 1) % images.length);
-    }, 8000); // 8 seconds per slide
+    }, 12000); // Speed Adjustment
 
     return () => clearInterval(id);
   }, [images]);
-
-  const currentSlide =
-    images.length > 0 ? images[index] : "/img/history-1.png"; // fallback if folder empty
 
   const bg = theme?.background ?? "#007bff";
   const headerBg = theme?.headerBg ?? "#00cb31";
@@ -223,12 +220,25 @@ export default function Screen8Page() {
                   </div>
 
                   <div className="info-card-images">
-                    <img
-                      key={currentSlide}
-                      src={currentSlide}
-                      alt="WELCOME FEATURE"
-                      className="info-card-image slideshow-fade"
-                    />
+                    {images.length > 0 ? (
+                      images.map((src, i) => (
+                        <img
+                          key={src}
+                          src={src}
+                          alt="WELCOME FEATURE"
+                          className={
+                            "info-card-image" +
+                            (i === index ? " is-active" : "")
+                          }
+                        />
+                      ))
+                    ) : (
+                      <img
+                        src="/img/history-1.png"
+                        alt="WELCOME FEATURE"
+                        className="info-card-image is-active"
+                      />
+                    )}
                   </div>
                 </div>
 

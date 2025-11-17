@@ -288,6 +288,8 @@ body {
 
 /* Info / promo cards on screen 8 */
 
+/* Info / promo cards on screen 8 */
+
 .info-card {
   margin-top: 18px;
   padding: 18px 24px;
@@ -314,22 +316,32 @@ body {
   text-transform: uppercase;
 }
 
+/* Crossfade image area */
 .info-card-images {
-  display: flex;
-  justify-content: center;
-  align-items: center;       /* vertically center inside the fixed area */
+  display: grid;             /* stack all images on top of each other */
+  place-items: center;       /* center them nicely */
   gap: 12px;
-  flex-wrap: wrap;
-  min-height: 300px;         /* 👈 keeps the block from shrinking between slides */
+  min-height: 300px;         /* keeps the block from shrinking between slides */
 }
 
-/* Slider image */
+/* Slider image - stacked */
 .info-card-image {
+  grid-area: 1 / 1;          /* all images share the same grid cell */
   max-height: clamp(220px, 30vh, 320px);
   width: auto;
   object-fit: contain;
   border-radius: 12px;
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
+
+  opacity: 0;
+  transform: scale(0.98);
+  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+}
+
+/* The active slide fades in on top of the previous one */
+.info-card-image.is-active {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .info-card-body {
