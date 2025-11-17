@@ -48,14 +48,16 @@ export default function Screen1Page() {
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
 
     async function fetchScreen(isFirst = false) {
       try {
-        if (isFirst) {
+        if (isFirst && !hasLoadedOnce) {
           setLoading(true);
+          setError(null);
         }
 
         const res = await fetch(`/api/screens/screen-1?t=${Date.now()}`, {
@@ -71,13 +73,19 @@ export default function Screen1Page() {
 
         setTheme(data.theme);
         setSections(data.sections || []);
+        setHasLoadedOnce(true);
         setError(null);
       } catch (err: any) {
         if (cancelled) return;
         console.error("[screen-1] failed to load screen", err);
-        setError(err?.message ?? "Failed to load");
+
+        // Only surface error before first successful load
+        if (!hasLoadedOnce) {
+          setError("Connection issue, retrying…");
+        }
+        // Do NOT clear theme/sections – keep last good data
       } finally {
-        if (!cancelled) {
+        if (!cancelled && !hasLoadedOnce) {
           setLoading(false);
         }
       }
@@ -95,7 +103,7 @@ export default function Screen1Page() {
       cancelled = true;
       clearInterval(id);
     };
-  }, []);
+  }, [hasLoadedOnce]);
 
   const getItems = (key: string) =>
     (sections.find((s) => s.key === key)?.items || []).filter(
@@ -119,19 +127,15 @@ export default function Screen1Page() {
       className="screen-root"
       style={{ backgroundColor: bg, color: rowText }}
     >
-      {loading && (
+      {/* Initial overlay only, before first successful load */}
+      {!hasLoadedOnce && (loading || error) && (
         <div className="empty-state">
-          <span>Loading menu…</span>
+          <span>{error ? error : "Loading menu…"}</span>
         </div>
       )}
 
-      {error && !loading && (
-        <div className="empty-state">
-          <span>{error}</span>
-        </div>
-      )}
-
-      {!loading && !error && (
+      {/* Once we have any good data, always render menu using last known state */}
+      {hasLoadedOnce && (
         <div className="screen-columns">
           {/* Left column – HOT DOGS */}
           <section className="menu-board">

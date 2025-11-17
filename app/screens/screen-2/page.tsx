@@ -53,13 +53,17 @@ function useScreenData() {
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
 
     async function fetchScreen(isFirst = false) {
       try {
-        if (isFirst) setLoading(true);
+        if (isFirst && !hasLoadedOnce) {
+          setLoading(true);
+          setError(null);
+        }
 
         const res = await fetch(
           `/api/screens/${SCREEN_ID}?t=${Date.now()}`,
@@ -74,13 +78,21 @@ function useScreenData() {
 
         setTheme(data.theme);
         setSections(data.sections || []);
+        setHasLoadedOnce(true);
         setError(null);
       } catch (err: any) {
         if (cancelled) return;
         console.error(`[${SCREEN_ID}] failed to load screen`, err);
-        setError(err?.message ?? "Failed to load");
+
+        // Only surface error before the first successful load
+        if (!hasLoadedOnce) {
+          setError("Connection issue, retrying…");
+        }
+        // Keep last good theme/sections
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled && !hasLoadedOnce) {
+          setLoading(false);
+        }
       }
     }
 
@@ -96,9 +108,9 @@ function useScreenData() {
       cancelled = true;
       clearInterval(id);
     };
-  }, []);
+  }, [hasLoadedOnce]);
 
-  return { theme, sections, loading, error };
+  return { theme, sections, loading, error, hasLoadedOnce };
 }
 
 /* ───────────── Presentational ───────────── */
@@ -120,7 +132,7 @@ function PriceList({ items }: { items: MenuItem[] }) {
 /* ───────────── Screen Component ───────────── */
 
 export default function Screen2Page() {
-  const { theme, sections, loading, error } = useScreenData();
+  const { theme, sections, loading, error, hasLoadedOnce } = useScreenData();
 
   const getItems = (key: string) =>
     (sections.find((s) => s.key === key)?.items || []).filter(
@@ -137,13 +149,15 @@ export default function Screen2Page() {
 
   return (
     <div className="screen-root" style={{ backgroundColor: bg }}>
-      {loading && <div className="empty-state">Loading menu…</div>}
-
-      {error && !loading && (
-        <div className="empty-state">{error}</div>
+      {/* Initial overlay only, before first successful load */}
+      {!hasLoadedOnce && (loading || error) && (
+        <div className="empty-state">
+          {error ? "Connection issue, retrying…" : "Loading menu…"}
+        </div>
       )}
 
-      {!loading && !error && (
+      {/* Once we have any good data, always render menu using last known state */}
+      {hasLoadedOnce && (
         <div className="screen-columns">
           {/* LEFT - SANDWICHES */}
           <section className="menu-board">
