@@ -3,16 +3,20 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+  width: 100%;
   background: var(--rk-bg, #007bff);
   font-family: "BD_Cartoon_Shout", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  overflow: hidden; /* no scrollbars on signage screens */
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 #root {
   height: 100%;
-}
-
-.screen-root {
-  text-transform: uppercase;
 }
 
 @font-face {
@@ -24,19 +28,23 @@ body {
 }
 
 .screen-root {
+  text-transform: uppercase;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
   color: #ffffff;
   padding: 16px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 /* Stack for hero strip + columns (screen 5, 6 etc) */
 .screen-stack {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  flex: 1;
+  min-height: 0;
 }
 
 /* Make the grid area fill available height */
@@ -45,8 +53,8 @@ body {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
   height: 100%;
-  /* Let it grow inside screen-root */
   flex: 1;
+  min-height: 0;
 }
 
 @media (max-width: 900px) {
@@ -185,7 +193,7 @@ body {
   margin: 18px auto;
   width: 80%;
   border-radius: 999px;
-  background: #00cb31;
+  background: var(--rk-accent, #00cb31);
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.45);
 }
 

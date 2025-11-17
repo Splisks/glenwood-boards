@@ -3,54 +3,148 @@
 
 import { useEffect, useState } from "react";
 
+type Theme = {
+  id: string;
+  label: string;
+  background: string;
+  headerBg: string;
+  headerText: string;
+  headerBorder: string;
+  rowText: string;
+  priceText: string;
+  accent: string;
+  noticeBg: string;
+  noticeText: string;
+};
+
 type MenuItem = {
   id: string;
+  code: string;
   label: string;
   price: string;
   active?: boolean;
+  sortOrder: number;
 };
 
-type MenuSections = Record<string, MenuItem[]>;
+type Section = {
+  id: string;
+  key: string;   // e.g. "HOT_DOGS"
+  title: string; // e.g. "Hot Dogs"
+  items: MenuItem[];
+};
+
+type ScreenResponse = {
+  screenId: string;
+  groupId: string;
+  themeId: string;
+  theme: Theme;
+  sections: Section[];
+};
+
+const POLL_MS = 5000; // 5s
 
 export default function Screen1Page() {
-  const [menuSections, setMenuSections] = useState<MenuSections>({});
+  const [theme, setTheme] = useState<Theme | null>(null);
+  const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function load() {
+    let cancelled = false;
+
+    async function fetchScreen(isFirst = false) {
       try {
-        const res = await fetch("/api/menu");
-        const data = await res.json();
-        setMenuSections(data.menuSections || {});
-      } catch (err) {
-        console.error("[screen-1] failed to load menu", err);
+        if (isFirst) {
+          setLoading(true);
+        }
+
+        const res = await fetch(`/api/screens/screen-1?t=${Date.now()}`, {
+          cache: "no-store",
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const data: ScreenResponse = await res.json();
+        if (cancelled) return;
+
+        setTheme(data.theme);
+        setSections(data.sections || []);
+        setError(null);
+      } catch (err: any) {
+        if (cancelled) return;
+        console.error("[screen-1] failed to load screen", err);
+        setError(err?.message ?? "Failed to load");
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     }
-    load();
+
+    // initial load
+    fetchScreen(true);
+
+    // polling
+    const id = setInterval(() => {
+      fetchScreen(false);
+    }, POLL_MS);
+
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
   }, []);
 
-  const hotDogs = (menuSections["HOT_DOGS"] || []).filter(
-    (i) => i.active !== false
-  );
-  const burgers = (menuSections["BURGERS"] || []).filter(
-    (i) => i.active !== false
-  );
+  const getItems = (key: string) =>
+    (sections.find((s) => s.key === key)?.items || []).filter(
+      (i) => i.active !== false
+    );
+
+  const hotDogs = getItems("HOT_DOGS");
+  const burgers = getItems("BURGERS");
+
+  const bg = theme?.background ?? "#007bff";
+  const headerBg = theme?.headerBg ?? "#00cb31";
+  const headerText = theme?.headerText ?? "#ffffff";
+  const headerBorder = theme?.headerBorder ?? "#003b7a";
+  const rowText = theme?.rowText ?? "#ffffff";
+  const priceText = theme?.priceText ?? "#ffffff";
+  const noticeBg = theme?.noticeBg ?? "#003b7a";
+  const noticeText = theme?.noticeText ?? "#ffffff";
 
   return (
-    <div className="screen-root">
+    <div
+      className="screen-root"
+      style={{ backgroundColor: bg, color: rowText }}
+    >
       {loading && (
         <div className="empty-state">
           <span>Loading menu…</span>
         </div>
       )}
 
-      {!loading && (
+      {error && !loading && (
+        <div className="empty-state">
+          <span>{error}</span>
+        </div>
+      )}
+
+      {!loading && !error && (
         <div className="screen-columns">
           {/* Left column – HOT DOGS */}
           <section className="menu-board">
-            <header className="menu-header">Hot Dogs</header>
+            <header
+              className="menu-header"
+              style={{
+                backgroundColor: headerBg,
+                color: headerText,
+                borderColor: headerBorder,
+              }}
+            >
+              Hot Dogs
+            </header>
 
             <div className="menu-items">
               {hotDogs.length === 0 ? (
@@ -59,8 +153,18 @@ export default function Screen1Page() {
                 <div className="menu-items-main">
                   {hotDogs.map((item) => (
                     <div key={item.id} className="menu-row">
-                      <div className="menu-row-label">{item.label}</div>
-                      <div className="menu-row-price">{item.price}</div>
+                      <div
+                        className="menu-row-label"
+                        style={{ color: rowText }}
+                      >
+                        {item.label}
+                      </div>
+                      <div
+                        className="menu-row-price"
+                        style={{ color: priceText }}
+                      >
+                        {item.price}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -70,7 +174,16 @@ export default function Screen1Page() {
 
           {/* Right column – HAMBURGERS + food safety notice */}
           <section className="menu-board">
-            <header className="menu-header">Hamburgers*</header>
+            <header
+              className="menu-header"
+              style={{
+                backgroundColor: headerBg,
+                color: headerText,
+                borderColor: headerBorder,
+              }}
+            >
+              Hamburgers*
+            </header>
 
             <div className="menu-items">
               {burgers.length === 0 ? (
@@ -79,16 +192,31 @@ export default function Screen1Page() {
                 <div className="menu-items-main">
                   {burgers.map((item) => (
                     <div key={item.id} className="menu-row">
-                      <div className="menu-row-label">{item.label}</div>
-                      <div className="menu-row-price">{item.price}</div>
+                      <div
+                        className="menu-row-label"
+                        style={{ color: rowText }}
+                      >
+                        {item.label}
+                      </div>
+                      <div
+                        className="menu-row-price"
+                        style={{ color: priceText }}
+                      >
+                        {item.price}
+                      </div>
                     </div>
                   ))}
                 </div>
               )}
 
-              {/* Bottom notice card, like in your screenshot */}
               <div className="menu-items-footer">
-                <div className="notice-card">
+                <div
+                  className="notice-card"
+                  style={{
+                    backgroundColor: noticeBg,
+                    color: noticeText,
+                  }}
+                >
                   <div className="notice-card-main">
                     * THOROUGHLY COOKING MEATS, POULTRY,
                     <br />

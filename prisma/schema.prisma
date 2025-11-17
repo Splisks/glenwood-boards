@@ -32,3 +32,22 @@ model MenuItem {
 
   @@unique([sectionId, code])
 }
+
+model Theme {
+  id          String   @id            // e.g. "classic-blue", "retro-red"
+  label       String                  // e.g. "Classic Blue", "Retro Red"
+  description String?                 // optional helper text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  groups      Group[]
+}
+
+model Group {
+  id        String   @id             // e.g. "default", "service1", etc
+  themeId   String?
+  theme     Theme?   @relation(fields: [themeId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

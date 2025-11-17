@@ -4,75 +4,119 @@
 import { useEffect, useState } from "react";
 
 const SCREEN_ID = "screen-8";
+const POLL_MS = 5000;
+
+/* ───────────── Types ───────────── */
+
+type Theme = {
+  id: string;
+  label: string;
+  background: string;
+  headerBg: string;
+  headerText: string;
+  headerBorder: string;
+  rowText: string;
+  priceText: string;
+  accent: string;
+  noticeBg: string;
+  noticeText: string;
+};
+
+type Section = {
+  id: string;
+  key: string;
+  title: string;
+  items: {
+    id: string;
+    code?: string;
+    label: string;
+    price: string;
+    active?: boolean;
+    sortOrder?: number;
+  }[];
+};
+
+type ScreenResponse = {
+  screenId: string;
+  groupId: string;
+  themeId: string;
+  theme: Theme;
+  sections: Section[];
+};
+
+/* ───────────── Component ───────────── */
 
 export default function Screen8Page() {
+  const [theme, setTheme] = useState<Theme | null>(null);
   const [images, setImages] = useState<string[]>([]);
   const [index, setIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Load list of images from /api/slider and subscribe to SSE
+  // Load theme from /api/screens/screen-8 and images from /api/slider
   useEffect(() => {
-    let closed = false;
+    let cancelled = false;
 
-    async function load() {
+    async function load(isFirst = false) {
       try {
-        const res = await fetch("/api/slider", {
-          cache: "no-store",
-        });
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        }
-        const data = await res.json();
-        const list: string[] = Array.isArray(data.images) ? data.images : [];
+        if (isFirst) setLoading(true);
 
-        if (closed) return;
+        const [screenRes, sliderRes] = await Promise.all([
+          fetch(`/api/screens/${SCREEN_ID}?t=${Date.now()}`, {
+            cache: "no-store",
+          }),
+          fetch(`/api/slider?t=${Date.now()}`, {
+            cache: "no-store",
+          }),
+        ]);
+
+        if (!screenRes.ok) {
+          throw new Error(`screen HTTP ${screenRes.status}`);
+        }
+        if (!sliderRes.ok) {
+          throw new Error(`slider HTTP ${sliderRes.status}`);
+        }
+
+        const screenData: ScreenResponse = await screenRes.json();
+        const sliderJson = await sliderRes.json();
+        const list: string[] = Array.isArray(sliderJson.images)
+          ? sliderJson.images
+          : [];
+
+        if (cancelled) return;
+
+        setTheme(screenData.theme || null);
 
         if (list.length > 0) {
           setImages(list);
-          // start on a random image so each load feels different
           const start = Math.floor(Math.random() * list.length);
           setIndex(start);
         } else {
           setImages([]);
           setIndex(0);
         }
-      } catch (err) {
-        console.error("[screen-8] failed to load slider images", err);
+
+        setError(null);
+      } catch (err: any) {
+        if (cancelled) return;
+        console.error("[screen-8] failed to load screen or slider", err);
+        setError(err?.message ?? "Failed to load");
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     }
 
     // initial load
-    load();
+    load(true);
 
-    // connect to SSE stream for this screen
-    const es = new EventSource(`/api/stream/${SCREEN_ID}`);
-
-    es.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (closed) return;
-
-        // Generic "content changed" ping – reload slider list
-        if (data?.type === "menuUpdated" || data?.type === "sliderUpdated") {
-          load();
-          return;
-        }
-
-        // ignore hello messages
-        if (data?.type === "connected") {
-          return;
-        }
-      } catch (err) {
-        console.error("[screen-8] bad SSE data", err);
-      }
-    };
-
-    es.onerror = (err) => {
-      console.error("[screen-8] SSE error", err);
-    };
+    // polling
+    const id = setInterval(() => {
+      load(false);
+    }, POLL_MS);
 
     return () => {
-      closed = true;
-      es.close();
+      cancelled = true;
+      clearInterval(id);
     };
   }, []);
 
@@ -90,14 +134,27 @@ export default function Screen8Page() {
   const currentSlide =
     images.length > 0 ? images[index] : "/img/history-1.png"; // fallback if folder empty
 
+  const bg = theme?.background ?? "#007bff";
+  const headerBg = theme?.headerBg ?? "#00cb31";
+  const headerText = theme?.headerText ?? "#ffffff";
+  const headerBorder = theme?.headerBorder ?? "#003b7a";
+  const accent = theme?.accent ?? "#00cb31";
+
   return (
-    <div className="screen-root">
+    <div className="screen-root" style={{ backgroundColor: bg }}>
       <div className="screen-stack">
         <div className="screen-columns">
-          {/* ───────── LEFT COLUMN: EXTRAS + TOPPINGS ───────── */}
+          {/* - LEFT COLUMN - */}
           <section className="menu-board">
-            <header className="menu-header">
-              <div>EXTRAS</div>
+            <header
+              className="menu-header"
+              style={{
+                backgroundColor: headerBg,
+                color: headerText,
+                borderColor: headerBorder,
+              }}
+            >
+              <div className="menu-header-label">EXTRAS</div>
             </header>
 
             <div className="menu-items">
@@ -105,17 +162,31 @@ export default function Screen8Page() {
                 <p className="menu-paragraph">
                   MAKE ANY SEAFOOD ORDER A PLATE FOR 6.50 MORE
                 </p>
+
                 <p className="menu-paragraph menu-paragraph--small">
                   (FRENCH FRIES &amp; COLESLAW)
                 </p>
 
-                <div className="menu-divider" />
+                <div
+                  className="menu-divider"
+                  style={{ backgroundColor: accent }}
+                />
 
                 <p className="menu-paragraph">
                   SUBSTITUTE ONION RINGS FOR FRENCH FRIES 8.50
                 </p>
 
-                <div className="menu-subheader">TOPPINGS</div>
+                {/* TOPPINGS HEADER MATCHING STYLE */}
+                <header
+                  className="menu-header"
+                  style={{
+                    backgroundColor: headerBg,
+                    color: headerText,
+                    borderColor: headerBorder,
+                  }}
+                >
+                  <div className="menu-header-label">TOPPINGS</div>
+                </header>
 
                 <div className="menu-toppings-row">
                   <span>PICKLES</span>
@@ -129,15 +200,22 @@ export default function Screen8Page() {
             </div>
           </section>
 
-          {/* ───────── RIGHT COLUMN: WELCOME + SEASONAL PROMO ───────── */}
+          {/* - RIGHT COLUMN: WELCOME + SEASONAL PROMO - */}
           <section className="menu-board">
-            <header className="menu-header">
+            <header
+              className="menu-header"
+              style={{
+                backgroundColor: headerBg,
+                color: headerText,
+                borderColor: headerBorder,
+              }}
+            >
               <div>WELCOME</div>
             </header>
 
             <div className="menu-items">
               <div className="menu-items-main">
-                {/* WELCOME CARD WITH RANDOM / ROTATING SLIDER */}
+                {/* WELCOME CARD WITH ROTATING SLIDER */}
                 <div className="info-card">
                   <div className="info-card-title">GLENWOOD DRIVE-IN</div>
                   <div className="info-card-subtitle">
@@ -154,7 +232,7 @@ export default function Screen8Page() {
                   </div>
                 </div>
 
-                {/* SEASONAL / PROMO SPOT – CURRENTLY ORDER ONLINE */}
+                {/* SEASONAL / PROMO SPOT - CURRENTLY ORDER ONLINE */}
                 <div className="info-card">
                   <div className="info-card-title">ORDER ONLINE</div>
                   <div className="info-card-subtitle">&amp; BEAT THE LINE!</div>
@@ -184,6 +262,12 @@ export default function Screen8Page() {
             </div>
           </section>
         </div>
+
+        {(loading || error) && (
+          <div className="empty-state empty-state--overlay">
+            {error ? error : "Loading…"}
+          </div>
+        )}
       </div>
     </div>
   );

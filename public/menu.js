@@ -10,7 +10,32 @@
     return path || "screen-1"; // default if root
   }
 
-  function useScreenData() {
+  // NEW: turn API { sections } into the "screen" shape the UI expects
+  function buildScreenFromApi(json) {
+    const sections = Array.isArray(json.sections) ? json.sections : [];
+
+    const columns = sections.map((sec) => ({
+      id: sec.id,
+      title: sec.title,
+      // let MenuBoard do its "legacy items -> priceRow blocks" mapping
+      items: Array.isArray(sec.items)
+        ? sec.items
+            .filter((it) => it.active !== false) // hide inactive by default
+            .map((it) => ({
+              type: "priceRow",
+              label: it.label,
+              price: it.price,
+            }))
+        : [],
+    }));
+
+    return {
+      id: json.screenId || "screen-1",
+      columns,
+    };
+  }
+
+  function useScreenData(pollMs = 5000) {
     const [state, setState] = useState({
       loading: true,
       error: null,
@@ -22,69 +47,56 @@
     useEffect(() => {
       const screenId = getScreenIdFromPath();
       let closed = false;
-      let eventSource = null;
+      let timerId;
 
-      async function fetchInitial() {
+      async function fetchScreen() {
         try {
-          const res = await fetch(`/api/screens/${screenId}`);
+          const res = await fetch(`/api/screens/${screenId}?t=${Date.now()}`, {
+            cache: "no-store",
+          });
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const json = await res.json();
           if (closed) return;
 
-          // NEW: apply theme from initial fetch
-          applyTheme(json.theme);
+          // apply theme tokens
+          if (json.theme) applyTheme(json.theme);
+
+          // build the "screen" shape from sections
+          const screen = buildScreenFromApi(json);
+
+          // basic group stub (we only use baseFontSize right now)
+          const group =
+            json.group && typeof json.group === "object"
+              ? json.group
+              : { id: json.groupId || "default", baseFontSize: 32 };
 
           setState({
             loading: false,
             error: null,
-            screen: json.screen,
-            group: json.group,
+            screen,
+            group,
             theme: json.theme || null,
           });
         } catch (err) {
-          console.error(err);
           if (closed) return;
-          setState((prev) => ({
-            ...prev,
-            loading: false,
-            error: "Could not load screen data",
-            screen: null,
-          }));
+          console.error("[useScreenData] fetch error", err);
+          setState((s) => ({ ...s, loading: false, error: String(err) }));
         }
       }
 
-      fetchInitial();
+      // initial load
+      fetchScreen();
 
-      eventSource = new EventSource(`/api/stream/${screenId}`);
-      eventSource.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          if (closed) return;
-
-          // NEW: apply theme from SSE
-          applyTheme(data.theme);
-
-          setState({
-            loading: false,
-            error: null,
-            screen: data.screen,
-            group: data.group,
-            theme: data.theme || null,
-          });
-        } catch (err) {
-          console.error("Bad SSE data", err);
-        }
-      };
-
-      eventSource.onerror = (err) => {
-        console.error("SSE error", err);
-      };
+      // polling
+      if (pollMs > 0) {
+        timerId = setInterval(fetchScreen, pollMs);
+      }
 
       return () => {
         closed = true;
-        if (eventSource) eventSource.close();
+        if (timerId) clearInterval(timerId);
       };
-    }, []);
+    }, [pollMs]);
 
     return state;
   }

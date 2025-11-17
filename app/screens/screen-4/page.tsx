@@ -3,83 +3,105 @@
 
 import { useEffect, useState } from "react";
 
+const SCREEN_ID = "screen-4";
+const POLL_MS = 5000;
+
+/* ───────────── Types ───────────── */
+
+type Theme = {
+  id: string;
+  label: string;
+  background: string;
+  headerBg: string;
+  headerText: string;
+  headerBorder: string;
+  rowText: string;
+  priceText: string;
+  accent: string;
+  noticeBg: string;
+  noticeText: string;
+};
+
 type MenuItem = {
   id: string;
+  code?: string;
   label: string;
   price: string;
   active?: boolean;
+  sortOrder?: number;
 };
 
-type MenuSections = Record<string, MenuItem[]>;
+type Section = {
+  id: string;
+  key: string;   // e.g. "BEVERAGES"
+  title: string; // e.g. "Beverages"
+  items: MenuItem[];
+};
 
-const SCREEN_ID = "screen-4";
+type ScreenResponse = {
+  screenId: string;
+  groupId: string;
+  themeId: string;
+  theme: Theme;
+  sections: Section[];
+};
 
-function useMenuSections() {
-  const [menuSections, setMenuSections] = useState<MenuSections>({});
+/* ───────────── Hook ───────────── */
+
+function useScreenData() {
+  const [theme, setTheme] = useState<Theme | null>(null);
+  const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let closed = false;
+    let cancelled = false;
 
-    async function load() {
+    async function fetchScreen(isFirst = false) {
       try {
-        const res = await fetch("/api/menu", {
-          cache: "no-store",
-        });
+        if (isFirst) setLoading(true);
+
+        const res = await fetch(
+          `/api/screens/${SCREEN_ID}?t=${Date.now()}`,
+          { cache: "no-store" }
+        );
         if (!res.ok) {
           throw new Error(`HTTP ${res.status}`);
         }
-        const data = await res.json();
-        if (closed) return;
-        setMenuSections(data.menuSections || {});
-      } catch (err) {
-        console.error("[screen-4] failed to load menu", err);
+
+        const data: ScreenResponse = await res.json();
+        if (cancelled) return;
+
+        setTheme(data.theme);
+        setSections(data.sections || []);
+        setError(null);
+      } catch (err: any) {
+        if (cancelled) return;
+        console.error(`[${SCREEN_ID}] failed to load screen`, err);
+        setError(err?.message ?? "Failed to load");
       } finally {
-        if (!closed) {
-          setLoading(false);
-        }
+        if (!cancelled) setLoading(false);
       }
     }
 
     // initial load
-    load();
+    fetchScreen(true);
 
-    // connect to SSE stream for this screen
-    const es = new EventSource(`/api/stream/${SCREEN_ID}`);
-
-    es.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (closed) return;
-
-        // from broadcastMenuUpdated()
-        if (data && data.type === "menuUpdated") {
-          load(); // re-fetch menu data so this screen updates live
-          return;
-        }
-
-        // ignore simple "connected" hello
-        if (data && data.type === "connected") {
-          return;
-        }
-      } catch (err) {
-        console.error("[screen-4] bad SSE data", err);
-      }
-    };
-
-    es.onerror = (err) => {
-      console.error("[screen-4] SSE error", err);
-      // optional: could es.close() and retry after a delay
-    };
+    // polling
+    const id = setInterval(() => {
+      fetchScreen(false);
+    }, POLL_MS);
 
     return () => {
-      closed = true;
-      es.close();
+      cancelled = true;
+      clearInterval(id);
     };
   }, []);
 
-  return { menuSections, loading };
+  return { theme, sections, loading, error };
 }
+
+/* ───────────── Presentational ───────────── */
 
 function PriceList({ items }: { items: MenuItem[] }) {
   const visible = items.filter((i) => i.active !== false);
@@ -95,9 +117,17 @@ function PriceList({ items }: { items: MenuItem[] }) {
   );
 }
 
+/* ───────────── Screen Component ───────────── */
+
 export default function Screen4Page() {
-  const { menuSections, loading } = useMenuSections();
-  const beverages = menuSections["BEVERAGES"] || [];
+  const { theme, sections, loading, error } = useScreenData();
+
+  const getItems = (key: string) =>
+    (sections.find((s) => s.key === key)?.items || []).filter(
+      (i) => i.active !== false
+    );
+
+  const beverages = getItems("BEVERAGES");
 
   const toppings = [
     "PICKLES",
@@ -108,15 +138,32 @@ export default function Screen4Page() {
     "HOT PEPPERS",
   ];
 
+  const bg = theme?.background ?? "#007bff";
+  const headerBg = theme?.headerBg ?? "#00cb31";
+  const headerText = theme?.headerText ?? "#ffffff";
+  const headerBorder = theme?.headerBorder ?? "#003b7a";
+  const accent = theme?.accent ?? "#00cb31";
+
   return (
-    <div className="screen-root">
+    <div className="screen-root" style={{ backgroundColor: bg }}>
       {loading && <div className="empty-state">LOADING MENU…</div>}
 
-      {!loading && (
+      {error && !loading && (
+        <div className="empty-state">{error}</div>
+      )}
+
+      {!loading && !error && (
         <div className="screen-columns">
           {/* LEFT – EXTRAS / FREE TOPPINGS */}
           <section className="menu-board">
-            <header className="menu-header">
+            <header
+              className="menu-header"
+              style={{
+                backgroundColor: headerBg,
+                color: headerText,
+                borderColor: headerBorder,
+              }}
+            >
               <div className="menu-header-label">EXTRAS</div>
             </header>
             <div className="menu-items">
@@ -126,7 +173,10 @@ export default function Screen4Page() {
                 </p>
                 <p className="menu-paragraph">(FRENCH FRIES &amp; COLESLAW)</p>
 
-                <div className="menu-divider" />
+                <div
+                  className="menu-divider"
+                  style={{ backgroundColor: accent }}
+                />
 
                 <p className="menu-paragraph">
                   SUBSTITUTE ONION RINGS FOR FRENCH FRIES FOR 8.50
@@ -147,7 +197,14 @@ export default function Screen4Page() {
 
           {/* RIGHT – BEVERAGES + FOLLOW US / COKE */}
           <section className="menu-board">
-            <header className="menu-header">
+            <header
+              className="menu-header"
+              style={{
+                backgroundColor: headerBg,
+                color: headerText,
+                borderColor: headerBorder,
+              }}
+            >
               <div className="menu-header-label">BEVERAGES</div>
             </header>
 
