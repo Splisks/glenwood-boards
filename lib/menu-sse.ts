@@ -26,11 +26,12 @@ export function removeClient(client: SSEClient) {
 export function broadcastMenuUpdated() {
   const payload = JSON.stringify({ type: "menuUpdated" });
 
-  for (const client of clients) {
+  clients.forEach((client) => {
     try {
       client.send(payload);
     } catch {
-      // ignore per-client send errors
+      // ignore errors
     }
-  }
+  });
 }
+
