@@ -33,7 +33,7 @@ type MenuItem = {
 
 type Section = {
   id: string;
-  key: string;   // e.g. "BEVERAGES"
+  key: string; // e.g. "BEVERAGES"
   title: string; // e.g. "Beverages"
   items: MenuItem[];
 };
@@ -65,10 +65,9 @@ function useScreenData() {
           setError(null);
         }
 
-        const res = await fetch(
-          `/api/screens/${SCREEN_ID}?t=${Date.now()}`,
-          { cache: "no-store" }
-        );
+        const res = await fetch(`/api/screens/${SCREEN_ID}?t=${Date.now()}`, {
+          cache: "no-store",
+        });
         if (!res.ok) {
           throw new Error(`HTTP ${res.status}`);
         }
@@ -84,11 +83,9 @@ function useScreenData() {
         if (cancelled) return;
         console.error(`[${SCREEN_ID}] failed to load screen`, err);
 
-        // Only surface error before the first successful load
         if (!hasLoadedOnce) {
           setError("Connection issue, retrying…");
         }
-        // Keep last good theme/sections
       } finally {
         if (!cancelled && !hasLoadedOnce) {
           setLoading(false);
@@ -196,7 +193,17 @@ export default function Screen4Page() {
                   SUBSTITUTE ONION RINGS FOR FRENCH FRIES FOR 8.50
                 </p>
 
-                <div className="menu-toppings-header">FREE TOPPINGS</div>
+                {/* FREE TOPPINGS HEADER – MATCHES MENU HEADER STYLE */}
+                <header
+                  className="menu-header"
+                  style={{
+                    backgroundColor: headerBg,
+                    color: headerText,
+                    borderColor: headerBorder,
+                  }}
+                >
+                  <div className="menu-header-label">FREE TOPPINGS</div>
+                </header>
 
                 <div className="menu-toppings-row">
                   {toppings.map((topping) => (
