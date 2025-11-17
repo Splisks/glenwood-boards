@@ -349,7 +349,7 @@ export function resolveActiveThemeId(baseThemeId: ThemeId): ThemeId {
   const today = `${mm}-${dd}` as const;
 
   const rule = SEASONAL_RULES.find((r) => isInRange(today, r.start, r.end));
-  if (rule) return r.themeId;
-
+  if (rule) return rule.themeId; 
+  
   return baseThemeId;
 }
