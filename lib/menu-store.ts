@@ -1,5 +1,21 @@
 // lib/menu-store.ts
-type ScreenData = {
+
+// ───────── Shared menu types (used by admin + APIs) ─────────
+
+export type MenuItem = {
+  id: string;
+  label: string;
+  price: string;
+  active?: boolean;
+  sortOrder?: number;
+  code?: string;
+};
+
+export type MenuSections = Record<string, MenuItem[]>;
+
+// ───────── Screen snapshot store (in-memory) ─────────
+
+export type ScreenData = {
   screen: any;
   group: any;
   theme: any;

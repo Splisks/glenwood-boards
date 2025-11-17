@@ -1,37 +1,33 @@
-// lib/menu-sse.ts
-// Tiny in-memory SSE client registry shared across routes.
+// lib/menu-store.ts
 
-type SSEClient = {
-  id: number;
-  send: (data: string) => void;
+// ───────── Shared menu types (used by admin + APIs) ─────────
+
+export type MenuItem = {
+  id: string;
+  label: string;
+  price: string;
+  active?: boolean;
+  sortOrder?: number;
+  code?: string;
 };
 
-const globalObj = globalThis as any;
+export type MenuSections = Record<string, MenuItem[]>;
 
-// Ensure we reuse the same Set across imports
-if (!globalObj.__menuSseClients) {
-  globalObj.__menuSseClients = new Set<SSEClient>();
+// ───────── Screen snapshot store (in-memory) ─────────
+
+export type ScreenData = {
+  screen: any;
+  group: any;
+  theme: any;
+};
+
+// simple in-memory store
+const SCREENS = new Map<string, ScreenData>();
+
+export function getScreenSnapshot(screenId: string): ScreenData | null {
+  return SCREENS.get(screenId) ?? null;
 }
 
-const clients: Set<SSEClient> = globalObj.__menuSseClients;
-
-export function addClient(client: SSEClient) {
-  clients.add(client);
+export function setScreenSnapshot(screenId: string, data: ScreenData) {
+  SCREENS.set(screenId, data);
 }
-
-export function removeClient(client: SSEClient) {
-  clients.delete(client);
-}
-
-export function broadcastMenuUpdated() {
-  const payload = JSON.stringify({ type: "menuUpdated" });
-
-  clients.forEach((client) => {
-    try {
-      client.send(payload);
-    } catch {
-      // ignore errors
-    }
-  });
-}
-

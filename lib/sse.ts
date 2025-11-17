@@ -40,11 +40,11 @@ export function broadcastMenuUpdated(extra: Record<string, any> = {}) {
   const text = `data: ${JSON.stringify(payload)}\n\n`;
   const chunk = new TextEncoder().encode(text);
 
-  for (const c of clients) {
+  clients.forEach((c) => {
     try {
       c.controller.enqueue(chunk);
     } catch (err) {
       // ignore broken connections
     }
-  }
+  });
 }
