@@ -79,11 +79,9 @@ export default function Screen1Page() {
         if (cancelled) return;
         console.error("[screen-1] failed to load screen", err);
 
-        // Only surface error before first successful load
         if (!hasLoadedOnce) {
           setError("Connection issue, retrying…");
         }
-        // Do NOT clear theme/sections – keep last good data
       } finally {
         if (!cancelled && !hasLoadedOnce) {
           setLoading(false);
@@ -117,16 +115,11 @@ export default function Screen1Page() {
   const headerBg = theme?.headerBg ?? "#00cb31";
   const headerText = theme?.headerText ?? "#ffffff";
   const headerBorder = theme?.headerBorder ?? "#003b7a";
-  const rowText = theme?.rowText ?? "#ffffff";
-  const priceText = theme?.priceText ?? "#ffffff";
   const noticeBg = theme?.noticeBg ?? "#003b7a";
   const noticeText = theme?.noticeText ?? "#ffffff";
 
   return (
-    <div
-      className="screen-root"
-      style={{ backgroundColor: bg, color: rowText }}
-    >
+    <div className="screen-root" style={{ backgroundColor: bg }}>
       {/* Initial overlay only, before first successful load */}
       {!hasLoadedOnce && (loading || error) && (
         <div className="empty-state">
@@ -157,18 +150,8 @@ export default function Screen1Page() {
                 <div className="menu-items-main">
                   {hotDogs.map((item) => (
                     <div key={item.id} className="menu-row">
-                      <div
-                        className="menu-row-label"
-                        style={{ color: rowText }}
-                      >
-                        {item.label}
-                      </div>
-                      <div
-                        className="menu-row-price"
-                        style={{ color: priceText }}
-                      >
-                        {item.price}
-                      </div>
+                      <div className="menu-row-label">{item.label}</div>
+                      <div className="menu-row-price">{item.price}</div>
                     </div>
                   ))}
                 </div>
@@ -196,18 +179,8 @@ export default function Screen1Page() {
                 <div className="menu-items-main">
                   {burgers.map((item) => (
                     <div key={item.id} className="menu-row">
-                      <div
-                        className="menu-row-label"
-                        style={{ color: rowText }}
-                      >
-                        {item.label}
-                      </div>
-                      <div
-                        className="menu-row-price"
-                        style={{ color: priceText }}
-                      >
-                        {item.price}
-                      </div>
+                      <div className="menu-row-label">{item.label}</div>
+                      <div className="menu-row-price">{item.price}</div>
                     </div>
                   ))}
                 </div>
