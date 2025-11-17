@@ -53,13 +53,18 @@ function useScreenData() {
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
 
     async function fetchScreen(isFirst = false) {
       try {
-        if (isFirst) setLoading(true);
+        // Only show loading/error overlay behavior before first good load
+        if (isFirst && !hasLoadedOnce) {
+          setLoading(true);
+          setError(null);
+        }
 
         const res = await fetch(
           `/api/screens/${SCREEN_ID}?t=${Date.now()}`,
@@ -74,13 +79,21 @@ function useScreenData() {
 
         setTheme(data.theme);
         setSections(data.sections || []);
+        setHasLoadedOnce(true);
         setError(null);
       } catch (err: any) {
         if (cancelled) return;
         console.error(`[${SCREEN_ID}] failed to load screen`, err);
-        setError(err?.message ?? "Failed to load");
+
+        // Only surface an error before we’ve ever loaded successfully
+        if (!hasLoadedOnce) {
+          setError("Connection issue, retrying…");
+        }
+        // Do NOT clear theme/sections – keep last good data
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled && !hasLoadedOnce) {
+          setLoading(false);
+        }
       }
     }
 
@@ -96,9 +109,9 @@ function useScreenData() {
       cancelled = true;
       clearInterval(id);
     };
-  }, []);
+  }, [hasLoadedOnce]);
 
-  return { theme, sections, loading, error };
+  return { theme, sections, loading, error, hasLoadedOnce };
 }
 
 /* ───────────── Presentational ───────────── */
@@ -120,7 +133,7 @@ function PriceList({ items }: { items: MenuItem[] }) {
 /* ───────────── Screen Component ───────────── */
 
 export default function Screen5Page() {
-  const { theme, sections, loading, error } = useScreenData();
+  const { theme, sections, loading, error, hasLoadedOnce } = useScreenData();
 
   const getItems = (key: string) =>
     (sections.find((s) => s.key === key)?.items || []).filter(
@@ -139,13 +152,15 @@ export default function Screen5Page() {
 
   return (
     <div className="screen-root" style={{ backgroundColor: bg }}>
-      {loading && <div className="empty-state">LOADING MENU…</div>}
-
-      {error && !loading && (
-        <div className="empty-state">{error}</div>
+      {/* Initial overlay only, for first load / connection issues */}
+      {!hasLoadedOnce && (loading || error) && (
+        <div className="empty-state">
+          {error ? error : "LOADING MENU…"}
+        </div>
       )}
 
-      {!loading && !error && (
+      {/* Once we have any good data, always render menu using last known state */}
+      {hasLoadedOnce && (
         <>
           {/* HERO IMAGE STRIP */}
           <div className="hero-strip">

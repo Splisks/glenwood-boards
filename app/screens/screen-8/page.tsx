@@ -52,6 +52,7 @@ export default function Screen8Page() {
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false); // 👈 new
 
   // Load theme from /api/screens/screen-8 and images from /api/slider
   useEffect(() => {
@@ -59,7 +60,11 @@ export default function Screen8Page() {
 
     async function load(isFirst = false) {
       try {
-        if (isFirst) setLoading(true);
+        // Only show loading spinner before first successful load
+        if (isFirst && !hasLoadedOnce) {
+          setLoading(true);
+          setError(null);
+        }
 
         const [screenRes, sliderRes] = await Promise.all([
           fetch(`/api/screens/${SCREEN_ID}?t=${Date.now()}`, {
@@ -96,13 +101,23 @@ export default function Screen8Page() {
           setIndex(0);
         }
 
+        // success: mark that we have at least one good state
+        setHasLoadedOnce(true);
         setError(null);
       } catch (err: any) {
         if (cancelled) return;
         console.error("[screen-8] failed to load screen or slider", err);
-        setError(err?.message ?? "Failed to load");
+
+        // Only surface an error overlay if we have NEVER loaded successfully
+        if (!hasLoadedOnce) {
+          setError("Connection issue, retrying…");
+        }
+
+        // Do NOT clear theme/images here - keep showing last known good data
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled && !hasLoadedOnce) {
+          setLoading(false);
+        }
       }
     }
 
@@ -118,7 +133,7 @@ export default function Screen8Page() {
       cancelled = true;
       clearInterval(id);
     };
-  }, []);
+  }, [hasLoadedOnce]); // 👈 include flag so effect sees current value
 
   // Rotate through images if we have more than 1
   useEffect(() => {
@@ -273,7 +288,8 @@ export default function Screen8Page() {
           </section>
         </div>
 
-        {(loading || error) && (
+        {/* Only show overlay before first successful load */}
+        {!hasLoadedOnce && (loading || error) && (
           <div className="empty-state empty-state--overlay">
             {error ? error : "Loading…"}
           </div>
