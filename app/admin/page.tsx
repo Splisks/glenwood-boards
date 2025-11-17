@@ -227,7 +227,7 @@ export default function AdminPage() {
     >
       {/* Top header */}
       <header style={{ marginBottom: "1.5rem" }}>
-        <h1 style={{ marginBottom: "0.25rem" }}>Glenwood Boards Admin</h1>
+        <h1 style={{ marginBottom: "0.25rem" }}>GLENWOOD BOARD ADMIN</h1>
         <p style={{ margin: 0, fontSize: "0.95rem" }}>
           Adjust theme and menu pricing. Screens auto-refresh from the server.
         </p>
@@ -244,7 +244,7 @@ export default function AdminPage() {
           marginBottom: "1.5rem",
         }}
       >
-        <h2 style={{ margin: "0 0 0.25rem", fontSize: 20 }}>Theme Admin</h2>
+        <h2 style={{ margin: "0 0 0.25rem", fontSize: 20 }}>THEME ADMIN</h2>
         <p
           style={{
             margin: "0 0 0.9rem",
@@ -252,7 +252,7 @@ export default function AdminPage() {
             color: "#9ca3af",
           }}
         >
-          Change the look of all boards without touching code.
+          Themes are automatically schedule to run throughout the year
         </p>
 
         <div
@@ -270,17 +270,7 @@ export default function AdminPage() {
               borderRadius: 999,
               border: "1px solid #4b5563",
               color: "#9ca3af",
-            }}
-          >
-            Group: <strong>{groupName}</strong>
-          </span>
-          <span
-            style={{
-              padding: "2px 8px",
-              fontSize: 11,
-              borderRadius: 999,
-              border: "1px solid #4b5563",
-              color: "#9ca3af",
+              marginTop: 10,
             }}
           >
             Current theme:{" "}
@@ -288,35 +278,6 @@ export default function AdminPage() {
           </span>
         </div>
 
-        <div style={{ marginBottom: 14 }}>
-          <label
-            htmlFor="groupId"
-            style={{
-              display: "block",
-              fontSize: 13,
-              marginBottom: 4,
-              color: "#d1d5db",
-            }}
-          >
-            Group ID
-          </label>
-          <input
-            id="groupId"
-            type="text"
-            value={groupId}
-            onChange={(e) => setGroupId(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "8px 10px",
-              borderRadius: 8,
-              border: "1px solid #4b5563",
-              background: "#111827",
-              color: "#e5e7eb",
-              fontSize: 14,
-              outline: "none",
-            }}
-          />
-        </div>
 
         <div style={{ marginBottom: 14 }}>
           <label
@@ -325,6 +286,7 @@ export default function AdminPage() {
               display: "block",
               fontSize: 13,
               marginBottom: 4,
+              marginTop: 20,
               color: "#d1d5db",
             }}
           >
