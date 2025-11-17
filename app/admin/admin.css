@@ -1,5 +1,13 @@
 /* app/admin/admin.css */
 
+/* 👇 Override signage setting and allow scrolling in admin */
+html,
+body {
+  overflow: auto;         /* or overflow-y: auto; if you only care about vertical */
+  height: auto;
+  min-height: 100%;
+}
+
 :root {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: #0b1120;
