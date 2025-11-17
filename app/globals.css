@@ -6,7 +6,7 @@ body {
   width: 100%;
   background: var(--rk-bg, #007bff);
   font-family: "BD_Cartoon_Shout", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  overflow: hidden; /* no scrollbars on signage screens */
+  /*overflow: hidden; */
 }
 
 *,

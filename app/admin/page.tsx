@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { MenuSections, MenuItem } from "@/lib/menu-store";
+import "./admin.css";
 
 type Status = "idle" | "loading" | "saving" | "error" | "saved";
 

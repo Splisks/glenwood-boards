@@ -3,7 +3,7 @@
 /* 👇 Override signage setting and allow scrolling in admin */
 html,
 body {
-  overflow: auto;         /* or overflow-y: auto; if you only care about vertical */
+  overflow: auto !important;         /* or overflow-y: auto; if you only care about vertical */
   height: auto;
   min-height: 100%;
 }
