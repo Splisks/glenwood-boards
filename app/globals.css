@@ -28,14 +28,14 @@ body {
 /* Big screens (1080p and up) – bump everything */
 @media (min-width: 1600px) {
   :root {
-    font-size: 20px; /* +25% */
+    font-size: 24px; /* +25% */
   }
 }
 
 /* Very big (4K, etc.) – bump more */
 @media (min-width: 2200px) {
   :root {
-    font-size: 24px; /* +50% vs base */
+    font-size: 28px; /* +50% vs base */
   }
 }
 
