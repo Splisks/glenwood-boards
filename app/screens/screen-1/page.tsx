@@ -50,6 +50,30 @@ export default function Screen1Page() {
   const [error, setError] = useState<string | null>(null);
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
+  // global auto-scale for TVs
+  useEffect(() => {
+    const baseWidth = 1920;
+    const baseHeight = 1080;
+
+    function updateScale() {
+      const scaleX = window.innerWidth / baseWidth;
+      const scaleY = window.innerHeight / baseHeight;
+      const scale = Math.min(scaleX, scaleY);
+
+      document.documentElement.style.setProperty(
+        "--global-scale",
+        scale.toString()
+      );
+    }
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+
+    return () => {
+      window.removeEventListener("resize", updateScale);
+    };
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -123,14 +147,14 @@ export default function Screen1Page() {
       {/* Initial overlay only, before first successful load */}
       {!hasLoadedOnce && (loading || error) && (
         <div className="empty-state">
-          <span>{error ? error : "Loading menu…"}</span>
+          <span>{error ? error : "Loading menu…"} </span>
         </div>
       )}
 
       {/* Once we have any good data, always render menu using last known state */}
       {hasLoadedOnce && (
         <div className="screen-columns">
-          {/* Left column – HOT DOGS */}
+          {/* Left column - HOT DOGS */}
           <section className="menu-board">
             <header
               className="menu-header"
@@ -159,7 +183,7 @@ export default function Screen1Page() {
             </div>
           </section>
 
-          {/* Right column – HAMBURGERS + food safety notice */}
+          {/* Right column - HAMBURGERS + food safety notice */}
           <section className="menu-board">
             <header
               className="menu-header"
