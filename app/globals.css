@@ -25,34 +25,54 @@ body {
   height: 100%;
 }
 
-/* --- SCALE IMAGES ON LARGE SCREENS (1080p TVs) --- */
+/* ==== TV / LARGE SCREEN BOOSTS (1080p+) ==== */
 @media (min-width: 1600px) {
 
-  /* Promo card and hero image inside screen-8 */
+  /* Increase hero image inside the promo card */
   .info-card-image {
-    max-height: clamp(300px, 38vh, 420px); /* + huge boost */
+    max-height: clamp(360px, 42vh, 520px); /* was 220px clamp */
   }
 
-  /* The small UberEats / DoorDash logos */
+  /* Make the UberEats / DoorDash logos larger */
   .info-card-logo {
-    max-height: 90px; /* was 54px */
+    max-height: 120px; /* was 54px */
   }
 
-  /* Increase the "Glenwood Drive-In" food promo image */
-  .hero-photo,
-  .menu-hero-image {
-    max-height: 340px; /* was 220px */
+  /* Increase headline + spacing inside promo card */
+  .info-card-title {
+    font-size: 3rem;      /* was 2.2rem */
   }
 
-  /* Any image in hero-strip like rings, clams, etc. */
+  .info-card-subtitle {
+    font-size: 2rem;      /* was 1.4rem */
+  }
+
+  .info-card {
+    padding: 32px 36px;   /* more interior space */
+  }
+
+  /* Increase the “family owned” image on the right column */
+  .menu-hero-image,
+  .hero-photo {
+    max-height: 380px; /* was ~220px */
+  }
+
+  /* Make the outer promo card taller / more balanced */
+  .menu-items-main {
+    justify-content: flex-start;
+    gap: 32px;            /* add vertical spacing between blocks */
+  }
+
+  /* Improve image enlargement for custom hero-photo classes */
   .hero-photo-left,
   .hero-photo-rings,
   .hero-photo-clams,
   .hero-photo-kid {
-    max-width: 360px; /* was ~220-260px */
-    transform: scale(1.1); /* small bump */
+    max-width: 400px;
+    transform: scale(1.2);
   }
 }
+
 
 /* Very big (4K, etc.) – bump more */
 @media (min-width: 2200px) {
