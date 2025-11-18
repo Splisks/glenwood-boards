@@ -52,14 +52,13 @@ export default function Screen1Page() {
 
   // global auto-scale for TVs
   useEffect(() => {
-    const baseWidth = 1280;  // treat design as 1280x720
+    const baseWidth = 1280;
     const baseHeight = 720;
 
     function updateScale() {
       const scaleX = window.innerWidth / baseWidth;
       const scaleY = window.innerHeight / baseHeight;
 
-      // choose the smaller axis, but never shrink below 1
       let scale = Math.min(scaleX, scaleY);
       if (scale < 1) {
         scale = 1;
@@ -78,7 +77,6 @@ export default function Screen1Page() {
       window.removeEventListener("resize", updateScale);
     };
   }, []);
-
 
   useEffect(() => {
     let cancelled = false;

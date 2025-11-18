@@ -1,6 +1,7 @@
 :root {
-  /* default so local dev looks normal if JS has not run yet */
+  /* base for laptops / normal dev */
   --global-scale: 1;
+  font-size: 16px;
 }
 
 html,
@@ -24,6 +25,20 @@ body {
   height: 100%;
 }
 
+/* Big screens (1080p and up) – bump everything */
+@media (min-width: 1600px) {
+  :root {
+    font-size: 20px; /* +25% */
+  }
+}
+
+/* Very big (4K, etc.) – bump more */
+@media (min-width: 2200px) {
+  :root {
+    font-size: 24px; /* +50% vs base */
+  }
+}
+
 @font-face {
   font-family: "BD_Cartoon_Shout";
   src: url("/fonts/BD_Cartoon_Shout.woff2") format("woff2");
@@ -42,9 +57,6 @@ body {
   padding: 16px;
   box-sizing: border-box;
   overflow: hidden;
-
-  transform: scale(var(--global-scale));
-  transform-origin: top left;
 }
 
 /* Stack for hero strip + columns (screen 5, 6 etc) */
