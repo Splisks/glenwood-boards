@@ -42,6 +42,7 @@ body {
   padding: 16px;
   box-sizing: border-box;
   overflow: hidden;
+
   transform: scale(var(--global-scale));
   transform-origin: top left;
 }
