@@ -25,9 +25,32 @@ body {
   height: 100%;
 }
 
+/* --- SCALE IMAGES ON LARGE SCREENS (1080p TVs) --- */
 @media (min-width: 1600px) {
-  :root {
-    font-size: 28px; /* +25% */
+
+  /* Promo card and hero image inside screen-8 */
+  .info-card-image {
+    max-height: clamp(300px, 38vh, 420px); /* + huge boost */
+  }
+
+  /* The small UberEats / DoorDash logos */
+  .info-card-logo {
+    max-height: 90px; /* was 54px */
+  }
+
+  /* Increase the "Glenwood Drive-In" food promo image */
+  .hero-photo,
+  .menu-hero-image {
+    max-height: 340px; /* was 220px */
+  }
+
+  /* Any image in hero-strip like rings, clams, etc. */
+  .hero-photo-left,
+  .hero-photo-rings,
+  .hero-photo-clams,
+  .hero-photo-kid {
+    max-width: 360px; /* was ~220-260px */
+    transform: scale(1.1); /* small bump */
   }
 }
 
@@ -105,7 +128,7 @@ body {
   border: 3px solid var(--rk-header-border, #000000);
   text-transform: uppercase;
   letter-spacing: 2px;
-  font-size: 3.6rem;
+  font-size: 4rem;
   text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
 }
