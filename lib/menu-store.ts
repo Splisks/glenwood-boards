@@ -4,11 +4,12 @@
 
 export type MenuItem = {
   id: string;
+  code?: string;
   label: string;
+  description?: string;
   price: string;
   active?: boolean;
   sortOrder?: number;
-  code?: string;
 };
 
 export type MenuSections = Record<string, MenuItem[]>;
