@@ -2,6 +2,7 @@
 
 :root {
   --global-scale: 1.2;
+  --menu-row-font-size: 2.3rem;
   font-size: calc(18px * var(--global-scale));
 }
 
@@ -203,7 +204,7 @@ body {
   align-items: baseline;
   gap: 8px;
   margin-bottom: 0;
-  font-size: 2rem;
+  font-size: var(--menu-row-font-size);
   font-weight: 700;
   text-shadow:
     -1px -1px 0 #000,
