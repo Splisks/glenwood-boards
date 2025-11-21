@@ -246,7 +246,7 @@ export const SEASONAL_RULES: SeasonalRule[] = [
   {
     themeId: "new-years-gold",
     start: "12-27",
-    end: "01-02",
+    end: "01-01",
   },
 
   // Valentine's Day - about a week around Feb 14
@@ -259,22 +259,22 @@ export const SEASONAL_RULES: SeasonalRule[] = [
   // St Patrick's Day
   {
     themeId: "st-patricks-green",
-    start: "03-10",
-    end: "03-18",
+    start: "03-13",
+    end: "03-17",
   },
 
   // Easter - approximate spring window around late March - early April
   {
     themeId: "easter-spring",
     start: "03-25",
-    end: "04-07",
+    end: "04-05",
   },
 
   // Mother's Day - early/mid May
   {
     themeId: "mothers-day",
-    start: "05-05",
-    end: "05-15",
+    start: "05-08",
+    end: "05-10",
   },
 
   // Memorial Day - late May
@@ -287,8 +287,8 @@ export const SEASONAL_RULES: SeasonalRule[] = [
   // Father's Day - mid June
   {
     themeId: "fathers-day",
-    start: "06-10",
-    end: "06-20",
+    start: "06-21",
+    end: "06-21",
   },
 
   // Independence Day
@@ -302,7 +302,7 @@ export const SEASONAL_RULES: SeasonalRule[] = [
   {
     themeId: "labor-day",
     start: "09-01",
-    end: "09-10",
+    end: "09-11",
   },
 
   // Breast Cancer Awareness - first part of October
@@ -322,14 +322,14 @@ export const SEASONAL_RULES: SeasonalRule[] = [
   // Thanksgiving - late November
   {
     themeId: "thanksgiving-harvest",
-    start: "11-20",
-    end: "11-28",
+    start: "11-21",
+    end: "11-27",
   },
 
   // Christmas - December up until New Year's handoff
   {
     themeId: "christmas-classic",
-    start: "12-01",
+    start: "11-28",
     end: "12-26",
   },
 ];

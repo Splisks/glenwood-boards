@@ -389,7 +389,7 @@ body {
 /* Slider image - stacked */
 .info-card-image {
   grid-area: 1 / 1;          /* all images share the same grid cell */
-  max-height: clamp(220px, 30vh, 320px);
+  max-height: clamp(400px, 38vh, 620px);
   width: auto;
   object-fit: contain;
   border-radius: 12px;
