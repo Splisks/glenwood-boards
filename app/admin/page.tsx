@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { signOut } from "next-auth/react";
 import type { MenuSections, MenuItem } from "@/lib/menu-store";
 import "./admin.css";
 
@@ -318,7 +319,28 @@ export default function AdminPage() {
             Adjust theme and menu pricing. Screens auto-refresh from the server.
           </p>
         </div>
-        {/* We’ll add a real logout button here once Google login / NextAuth is wired up */}
+        {/* Logout button */}
+          <button
+            type="button"
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="admin-logout-btn"
+            style={{
+              padding: "0.35rem 0.9rem",
+              borderRadius: 999,
+              border: "none",
+              fontSize: "0.8rem",
+              fontWeight: 600,
+              cursor: "pointer",
+              background: "rgba(15,23,42,0.9)",
+              color: "#e5e7eb",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.35)",
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Log out
+          </button>
       </header>
 
       {/* Theme Admin card */}
