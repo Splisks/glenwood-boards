@@ -214,6 +214,29 @@ export default function Screen8Page() {
                   <span>LETTUCE</span>
                   <span>HOT PEPPERS</span>
                 </div>
+
+                {/* SEASONAL / PROMO SPOT - CURRENTLY ORDER ONLINE */}
+                <div className="info-card">
+                  <div className="info-card-title">ORDER ONLINE</div>
+                  <div className="info-card-subtitle">&amp; BEAT THE LINE!</div>
+
+                  <div className="info-card-body">
+                    GLENWOODDRIVEIN.COM
+                    <br />
+                    <br />
+                    GIFT CARDS AVAILABLE ALL YEAR
+                    <br />
+                    PERFECT FOR THE GLENWOOD FAN IN YOUR LIFE
+                  </div>
+
+                  <div className="info-card-logos">
+                    <img
+                      src="/img/logo-doordash.png"
+                      alt="DOORDASH"
+                      className="info-card-logo"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </section>
@@ -290,6 +313,7 @@ export default function Screen8Page() {
                     />
                   </div>
                 </div>
+
               </div>
             </div>
           </section>

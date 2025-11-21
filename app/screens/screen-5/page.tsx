@@ -2,7 +2,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SnowOverlay } from "@/components/SnowOverlay";
+import { ThemeOverlay } from "@/components/ThemeOverlay";
+import { resolveActiveThemeId, type ThemeId } from "@/lib/themes";
 
 const SCREEN_ID = "screen-5";
 const POLL_MS = 5000;
@@ -42,7 +43,7 @@ type Section = {
 type ScreenResponse = {
   screenId: string;
   groupId: string;
-  themeId: string;
+  themeId: ThemeId;
   theme: Theme;
   sections: Section[];
 };
@@ -51,6 +52,7 @@ type ScreenResponse = {
 
 function useScreenData() {
   const [theme, setTheme] = useState<Theme | null>(null);
+  const [themeId, setThemeId] = useState<ThemeId | null>(null);
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -61,7 +63,6 @@ function useScreenData() {
 
     async function fetchScreen(isFirst = false) {
       try {
-        // Only show loading/error overlay behavior before first good load
         if (isFirst && !hasLoadedOnce) {
           setLoading(true);
           setError(null);
@@ -79,6 +80,7 @@ function useScreenData() {
         if (cancelled) return;
 
         setTheme(data.theme);
+        setThemeId(data.themeId);
         setSections(data.sections || []);
         setHasLoadedOnce(true);
         setError(null);
@@ -86,11 +88,9 @@ function useScreenData() {
         if (cancelled) return;
         console.error(`[${SCREEN_ID}] failed to load screen`, err);
 
-        // Only surface an error before we’ve ever loaded successfully
         if (!hasLoadedOnce) {
           setError("Connection issue, retrying…");
         }
-        // Do NOT clear theme/sections – keep last good data
       } finally {
         if (!cancelled && !hasLoadedOnce) {
           setLoading(false);
@@ -112,7 +112,7 @@ function useScreenData() {
     };
   }, [hasLoadedOnce]);
 
-  return { theme, sections, loading, error, hasLoadedOnce };
+  return { theme, themeId, sections, loading, error, hasLoadedOnce };
 }
 
 /* ───────────── Presentational ───────────── */
@@ -134,7 +134,8 @@ function PriceList({ items }: { items: MenuItem[] }) {
 /* ───────────── Screen Component ───────────── */
 
 export default function Screen5Page() {
-  const { theme, sections, loading, error, hasLoadedOnce } = useScreenData();
+  const { theme, themeId, sections, loading, error, hasLoadedOnce } =
+    useScreenData();
 
   const getItems = (key: string) =>
     (sections.find((s) => s.key === key)?.items || []).filter(
@@ -151,7 +152,9 @@ export default function Screen5Page() {
   const noticeBg = theme?.noticeBg ?? "#003b7a";
   const noticeText = theme?.noticeText ?? "#ffffff";
 
-  const isChristmas = theme?.id === "christmas-classic";
+  const activeThemeId = resolveActiveThemeId(
+    themeId ?? "classic-blue"
+  );
 
   return (
     <div className="screen-root" style={{ backgroundColor: bg }}>
@@ -162,8 +165,10 @@ export default function Screen5Page() {
         </div>
       )}
 
-      {/* Snow only when the resolved theme is Christmas */}
-      {isChristmas && <SnowOverlay />}
+      {/* Holiday Overlay Effects – only once we know the theme */}
+      {hasLoadedOnce && (
+        <ThemeOverlay themeId={activeThemeId} />
+      )}
 
       {/* Once we have any good data, always render menu using last known state */}
       {hasLoadedOnce && (

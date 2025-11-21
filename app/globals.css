@@ -547,6 +547,40 @@ img.info-card-image {
   }
 }
 
+/* ========== HOLIDAY OVERLAY ========== */
+
+.holiday-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 30; /* over content, under any modals if you ever have them */
+}
+
+.holiday-icon {
+  position: absolute;
+  top: -10%;
+  animation-name: holiday-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+  opacity: 0;
+}
+
+@keyframes holiday-fall {
+  0% {
+    transform: translate3d(0, -100%, 0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 120vh, 0) rotate(360deg);
+    opacity: 0;
+  }
+}
+
 /* ========== SNOW OVERLAY ========== */
 
 .snow-overlay {
@@ -581,3 +615,4 @@ img.info-card-image {
     opacity: 0;
   }
 }
+
