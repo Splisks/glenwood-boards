@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { SnowOverlay } from "@/components/SnowOverlay";
 
 const SCREEN_ID = "screen-6";
 const POLL_MS = 5000;
@@ -146,6 +147,8 @@ export default function Screen6Page() {
   const headerText = theme?.headerText ?? "#ffffff";
   const headerBorder = theme?.headerBorder ?? "#003b7a";
 
+  const isChristmas = theme?.id === "christmas-classic";
+  
   return (
     <div className="screen-root" style={{ backgroundColor: bg }}>
       {/* Initial loading/error overlay only until we have first good data */}
@@ -154,6 +157,9 @@ export default function Screen6Page() {
           {error ? error : "LOADING MENU…"}
         </div>
       )}
+
+      {/* Snow only when the resolved theme is Christmas */}
+      {isChristmas && <SnowOverlay />}
 
       {/* After first load, always render menu using last known good state */}
       {hasLoadedOnce && (

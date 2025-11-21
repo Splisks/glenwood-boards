@@ -35,7 +35,7 @@ body {
 
   /* Make the UberEats / DoorDash logos larger */
   .info-card-logo {
-    max-height: 120px; /* was 54px */
+    /*max-height: 120px; */
   }
 
   /* Increase headline + spacing inside promo card */
@@ -394,10 +394,9 @@ body {
   object-fit: contain;
   border-radius: 12px;
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
-
   opacity: 0;
   transform: scale(0.98);
-  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+  transition: opacity 2s ease-in-out, transform 2s ease-in-out;
 }
 
 /* The active slide fades in on top of the previous one */
@@ -421,7 +420,7 @@ body {
 }
 
 .info-card-logo {
-  max-height: 54px;
+  max-height: 8vh;
   width: auto;
 }
 
@@ -482,4 +481,38 @@ body {
   max-width: 160px;
   border-radius: 24px;
   transform: translate(0px, -6px) scale(1.05);
+}
+
+/* Snow overlay */
+.snow-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 50; /* above content, below any modals */
+}
+
+.snowflake {
+  position: absolute;
+  top: -10%;
+  color: #ffffff;
+  opacity: 0.9;
+  animation-name: snow-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* simple falling animation */
+@keyframes snow-fall {
+  0% {
+    transform: translate3d(0, -100%, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 110vh, 0);
+    opacity: 0;
+  }
 }

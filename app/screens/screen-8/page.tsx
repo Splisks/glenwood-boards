@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { SnowOverlay } from "@/components/SnowOverlay";
 
 const SCREEN_ID = "screen-8";
 const POLL_MS = 5000;
@@ -52,7 +53,7 @@ export default function Screen8Page() {
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [hasLoadedOnce, setHasLoadedOnce] = useState(false); // 👈 new
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
   // Load theme from /api/screens/screen-8 and images from /api/slider
   useEffect(() => {
@@ -133,7 +134,7 @@ export default function Screen8Page() {
       cancelled = true;
       clearInterval(id);
     };
-  }, [hasLoadedOnce]); // 👈 include flag so effect sees current value
+  }, [hasLoadedOnce]);
 
   // Rotate through images if we have more than 1
   useEffect(() => {
@@ -152,8 +153,13 @@ export default function Screen8Page() {
   const headerBorder = theme?.headerBorder ?? "#003b7a";
   const accent = theme?.accent ?? "#00cb31";
 
+  const isChristmas = theme?.id === "christmas-classic";
+
   return (
     <div className="screen-root" style={{ backgroundColor: bg }}>
+      {/* Snow only when the resolved theme is Christmas */}
+      {isChristmas && <SnowOverlay />}
+
       <div className="screen-stack">
         <div className="screen-columns">
           {/* - LEFT COLUMN - */}

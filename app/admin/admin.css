@@ -3,7 +3,7 @@
 /* 👇 Override signage setting and allow scrolling in admin */
 html,
 body {
-  overflow: auto !important;         /* or overflow-y: auto; if you only care about vertical */
+  overflow: auto !important; /* or overflow-y: auto; if you only care about vertical */
   height: auto;
   min-height: 100%;
 }
@@ -18,6 +18,15 @@ body {
   margin: 0;
 }
 
+/* Optional helper if you ever want cartoon headings in admin */
+.bd-cartoon,
+.bd-cartoon * {
+  font-family: "BD_Cartoon_Shout", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  text-transform: uppercase;
+}
+
+/* Generic card styling (still used in some layouts) */
 .card {
   background: #020617;
   border-radius: 14px;
@@ -176,4 +185,122 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Desktop layout for item rows */
+.admin-item-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2.4fr) minmax(0, 1.6fr) auto;
+  column-gap: 0.5rem;
+  row-gap: 0.3rem;
+  align-items: center;
+}
+
+.admin-item-name {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+}
+
+.admin-item-price {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+}
+
+.admin-item-controls {
+  grid-column: 3 / 4;
+  grid-row: 1 / 3;
+  display: flex;
+  flex-direction: column; /* desktop: stacked */
+  gap: 0.35rem;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+/* This is unused in Glenwood (no description input) but harmless */
+.admin-item-description {
+  grid-column: 1 / 3;
+  grid-row: 2 / 3;
+}
+
+/* Desktop only - disable text selection (prevents accidental highlights) */
+@media (hover: hover) and (pointer: fine) {
+  body,
+  body * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Mobile admin tweaks
+   ───────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .admin-root {
+    padding: 1.25rem 0.9rem !important;
+  }
+
+  .admin-header h1 {
+    font-size: 1.1rem;
+  }
+
+  .admin-header p {
+    font-size: 0.8rem;
+  }
+
+  .admin-logout-btn {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.8rem;
+  }
+
+  .admin-theme-card,
+  .admin-section-card {
+    padding: 0.85rem 0.9rem !important;
+  }
+
+  .admin-section-header h2 {
+    font-size: 1rem;
+  }
+
+  /* Stack item row on mobile */
+  .admin-item-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-item-name,
+  .admin-item-price,
+  .admin-item-description,
+  .admin-item-controls {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  /* enforce vertical order: name -> price -> description -> controls */
+  .admin-item-name {
+    order: 1;
+  }
+
+  .admin-item-price {
+    order: 2;
+    margin-top: 0.25rem;
+  }
+
+  .admin-item-description {
+    order: 3;
+    margin-top: 0.25rem;
+  }
+
+  .admin-item-controls {
+    order: 4;
+    flex-direction: row; /* mobile: side by side */
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.4rem;
+  }
+
+  .admin-delete-btn {
+    white-space: nowrap;
+  }
 }

@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { SnowOverlay } from "@/components/SnowOverlay";
 
 type Theme = {
   id: string;
@@ -146,8 +147,14 @@ export default function Screen1Page() {
   const noticeBg = theme?.noticeBg ?? "#003b7a";
   const noticeText = theme?.noticeText ?? "#ffffff";
 
+  // 👇 this is the key line: check if active theme is christmas-classic
+  const isChristmas = theme?.id === "christmas-classic";
+
   return (
     <div className="screen-root" style={{ backgroundColor: bg }}>
+      {/* Snow only when the resolved theme is Christmas */}
+      {isChristmas && <SnowOverlay />}
+
       {/* Initial overlay only, before first successful load */}
       {!hasLoadedOnce && (loading || error) && (
         <div className="empty-state">

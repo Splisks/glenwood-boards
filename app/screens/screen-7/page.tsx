@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { SnowOverlay } from "@/components/SnowOverlay";
 
 const SCREEN_ID = "screen-7";
 const POLL_MS = 5000;
@@ -145,6 +146,8 @@ export default function Screen7Page() {
   const headerText = theme?.headerText ?? "#ffffff";
   const headerBorder = theme?.headerBorder ?? "#003b7a";
 
+  const isChristmas = theme?.id === "christmas-classic";
+
   return (
     <div className="screen-root" style={{ backgroundColor: bg }}>
       {/* Initial overlay only, before first successful load */}
@@ -153,6 +156,9 @@ export default function Screen7Page() {
           {error ? "Connection issue, retrying…" : "Loading menu…"}
         </div>
       )}
+
+      {/* Snow only when the resolved theme is Christmas */}
+      {isChristmas && <SnowOverlay />}
 
       {/* Once we have any good data, always render menu using last known state */}
       {hasLoadedOnce && (

@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { SnowOverlay } from "@/components/SnowOverlay";
 
 const SCREEN_ID = "screen-4";
 const POLL_MS = 5000;
@@ -153,6 +154,8 @@ export default function Screen4Page() {
   const headerBorder = theme?.headerBorder ?? "#003b7a";
   const accent = theme?.accent ?? "#00cb31";
 
+  const isChristmas = theme?.id === "christmas-classic";
+
   return (
     <div className="screen-root" style={{ backgroundColor: bg }}>
       {/* Initial overlay only, before first successful load */}
@@ -161,6 +164,9 @@ export default function Screen4Page() {
           {error ? "Connection issue, retrying…" : "LOADING MENU…"}
         </div>
       )}
+
+      {/* Snow only when the resolved theme is Christmas */}
+      {isChristmas && <SnowOverlay />}
 
       {/* Once we have any good data, always render menu using last known state */}
       {hasLoadedOnce && (
@@ -240,7 +246,7 @@ export default function Screen4Page() {
                   <div className="social-card-inner">
                     <img
                       className="social-card-image"
-                      src="/img/social-follow.png"
+                      src="/img/social-follow-transparent.png"
                       alt="FOLLOW US ON SOCIAL MEDIA"
                     />
                     <img
