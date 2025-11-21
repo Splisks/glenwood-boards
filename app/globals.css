@@ -559,10 +559,10 @@ img.info-card-image {
 
 .holiday-overlay {
   pointer-events: none;
-  position: absolute;
+  position: fixed;      /* was absolute */
   inset: 0;
   overflow: hidden;
-  z-index: 30;
+  z-index: 45;          /* above content, below snow (50) */
 }
 
 .holiday-icon {
@@ -577,7 +577,7 @@ img.info-card-image {
 
 @keyframes holiday-fall {
   0% {
-    transform: translate3d(0, -120%, 0);
+    transform: translate3d(0, -120%, 0) rotate(0deg);
     opacity: 0;
   }
   10% {
@@ -587,7 +587,7 @@ img.info-card-image {
     opacity: 1;
   }
   100% {
-    transform: translate3d(0, 130vh, 0);
+    transform: translate3d(0, 130vh, 0) rotate(360deg);
     opacity: 0;
   }
 }
