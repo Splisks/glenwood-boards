@@ -200,9 +200,9 @@ export default function AdminPage() {
 
       const newItem: MenuItem = {
         id: `new-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-        // @ts-expect-error if MenuItem doesn't have code, this is just ignored
         code: "",
         label: "New item",
+        description: "",
         price: "",
         active: true,
         sortOrder: maxSortOrder + 1,
