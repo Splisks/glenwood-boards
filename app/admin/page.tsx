@@ -289,17 +289,8 @@ export default function AdminPage() {
       }}
     >
       {/* Top header */}
-      <header
-        className="admin-header"
-        style={{
-          marginBottom: "1.5rem",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: "1rem",
-        }}
-      >
-        <div style={{ textAlign: "left" }}>
+      <header className="admin-header">
+        <div className="admin-header-text">
           <h1
             style={{
               marginBottom: "0.25rem",
@@ -316,9 +307,10 @@ export default function AdminPage() {
               textTransform: "none",
             }}
           >
-            Adjust theme and menu pricing. Screens auto-refresh from the server.
+            ADJUST THEME AND MENU PRICING<br />SCREENS AUTO-REFRESH FROM THE SERVER
           </p>
         </div>
+
         {/* Logout button */}
         <button
           type="button"
@@ -386,7 +378,7 @@ export default function AdminPage() {
               flex: 1,
             }}
           >
-            Theme admin
+            THEME MANAGEMENT
           </h2>
           <button
             type="button"

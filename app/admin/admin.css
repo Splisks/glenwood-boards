@@ -95,9 +95,10 @@ th {
   font-weight: 500;
 }
 
+/* 🔼 Slightly taller inputs everywhere */
 input[type="text"] {
   width: 100%;
-  padding: 5px 7px;
+  padding: 7px 9px;              /* was 5px 7px */
   border-radius: 6px;
   border: 1px solid #374151;
   background: #020617;
@@ -194,6 +195,16 @@ button {
   column-gap: 0.5rem;
   row-gap: 0.3rem;
   align-items: center;
+
+  /* 🔼 Slightly more gap between menu items down the list */
+  margin-bottom: 0.35rem;
+}
+
+/* 🔼 Make name/price/description a bit taller */
+.admin-item-name,
+.admin-item-price,
+.admin-item-description {
+  min-height: 2.3rem;
 }
 
 .admin-item-name {
@@ -222,6 +233,19 @@ button {
   grid-row: 2 / 3;
 }
 
+.admin-header {
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-header-text {
+  text-align: left;
+}
+
+
 /* Desktop only - disable text selection (prevents accidental highlights) */
 @media (hover: hover) and (pointer: fine) {
   body,
@@ -241,6 +265,12 @@ button {
     padding: 1.25rem 0.9rem !important;
   }
 
+  /* Stack header vertically on mobile */
+  .admin-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .admin-header h1 {
     font-size: 1.1rem;
   }
@@ -249,9 +279,17 @@ button {
     font-size: 0.8rem;
   }
 
+  /* Logout button in top-right row */
   .admin-logout-btn {
     font-size: 0.7rem;
     padding: 0.3rem 0.8rem;
+    align-self: flex-end;
+    margin-bottom: 0.4rem;
+  }
+
+  /* Header text sits under the button, full width */
+  .admin-header-text {
+    order: 2;
   }
 
   .admin-theme-card,
@@ -266,6 +304,7 @@ button {
   /* Stack item row on mobile */
   .admin-item-row {
     grid-template-columns: 1fr;
+    margin-bottom: 0.45rem; /* a hair more separation on mobile too */
   }
 
   .admin-item-name,
@@ -305,6 +344,7 @@ button {
   }
 }
 
+/* Headers clickable to toggle cards */
 .admin-theme-header,
 .admin-section-header {
   cursor: pointer;
