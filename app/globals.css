@@ -525,6 +525,11 @@ img.info-card-image {
   width: auto;
 }
 
+.info-card-promoted {
+  max-height: 24.5vh;
+  width: auto;
+}
+
 /* accents if you use them */
 .badge-accent {
   background: var(--rk-accent, #007bff);

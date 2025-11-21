@@ -179,20 +179,17 @@ export default function Screen8Page() {
               <div className="menu-items-main">
                 <p className="menu-paragraph">
                   MAKE ANY SEAFOOD ORDER A PLATE FOR 6.50 MORE
-                </p>
-
-                <p className="menu-paragraph menu-paragraph--small">
-                  (FRENCH FRIES &amp; COLESLAW)
-                </p>
-
-                <div
-                  className="menu-divider"
-                  style={{ backgroundColor: accent }}
-                />
-
-                <p className="menu-paragraph">
-                  SUBSTITUTE ONION RINGS FOR FRENCH FRIES 8.50
-                </p>
+                    <p className="menu-paragraph menu-paragraph--small">
+                      (FRENCH FRIES &amp; COLESLAW)
+                    </p>           
+                  <div
+                    className="menu-divider"
+                    style={{ backgroundColor: accent }}
+                  />
+                    <p className="menu-paragraph">
+                      SUBSTITUTE ONION RINGS FOR FRENCH FRIES 8.50
+                    </p>
+                  </p>
 
                 {/* TOPPINGS HEADER MATCHING STYLE */}
                 <header
@@ -215,25 +212,15 @@ export default function Screen8Page() {
                   <span>HOT PEPPERS</span>
                 </div>
 
-                {/* SEASONAL / PROMO SPOT - CURRENTLY ORDER ONLINE */}
+                {/* SEASONAL / PROMO SPOT */}
                 <div className="info-card">
-                  <div className="info-card-title">ORDER ONLINE</div>
-                  <div className="info-card-subtitle">&amp; BEAT THE LINE!</div>
-
-                  <div className="info-card-body">
-                    GLENWOODDRIVEIN.COM
-                    <br />
-                    <br />
-                    GIFT CARDS AVAILABLE ALL YEAR
-                    <br />
-                    PERFECT FOR THE GLENWOOD FAN IN YOUR LIFE
-                  </div>
-
-                  <div className="info-card-logos">
+                  <div className="info-card-subtitle">TRY THE NEW</div>
+                  <div className="info-card-title">BUFFALO CHICKEN BITES</div>
+                   <div className="info-card-logos">
                     <img
-                      src="/img/logo-doordash.png"
-                      alt="DOORDASH"
-                      className="info-card-logo"
+                      src="/img/sides-buffalo-bites.png"
+                      alt="buffalo-bites"
+                      className="info-card-promoted"
                     />
                   </div>
                 </div>
