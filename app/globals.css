@@ -467,8 +467,8 @@ body {
 .info-card-images {
   position: relative;
   width: 100%;
-  /* Make this chunk of the card BIG on TV */
-  height: min(55vh, 900px);   /* tweak these numbers to taste */
+  /* slightly shorter so it doesn't hit the card bottom */
+  height: min(42vh, 750px);   /* was 55vh / 900px */
   overflow: hidden;
 
   display: flex;
