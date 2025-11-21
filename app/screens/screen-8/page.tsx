@@ -271,6 +271,7 @@ export default function Screen8Page() {
                   <div className="info-card-body">
                     GLENWOODDRIVEIN.COM
                     <br />
+                    <br />
                     GIFT CARDS AVAILABLE ALL YEAR
                     <br />
                     PERFECT FOR THE GLENWOOD FAN IN YOUR LIFE

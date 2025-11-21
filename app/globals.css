@@ -1,7 +1,8 @@
+/* ========== BASE & RESET ========== */
+
 :root {
-  /* base for laptops / normal dev */
-  --global-scale: 1;
-  font-size: 16px;
+  --global-scale: 1.2;
+  font-size: calc(18px * var(--global-scale));
 }
 
 html,
@@ -11,8 +12,9 @@ body {
   height: 100%;
   width: 100%;
   background: var(--rk-bg, #007bff);
-  font-family: "BD_Cartoon_Shout", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  overflow: hidden; 
+  font-family: "BD_Cartoon_Shout", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  overflow: hidden;
 }
 
 *,
@@ -25,42 +27,52 @@ body {
   height: 100%;
 }
 
-/* ==== TV / LARGE SCREEN BOOSTS (1080p+) ==== */
-@media (min-width: 1600px) {
+/* ========== FONTS ========== */
 
+@font-face {
+  font-family: "BD_Cartoon_Shout";
+  src: url("/fonts/BD_Cartoon_Shout.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ==== TV / LARGE SCREEN BOOSTS (PROMO / HERO) ==== */
+
+@media (min-width: 1600px) {
   /* Increase hero image inside the promo card */
   .info-card-image {
-    max-height: clamp(360px, 42vh, 520px); /* was 220px clamp */
+    max-height: clamp(360px, 42vh, 520px);
   }
 
-  /* Make the UberEats / DoorDash logos larger */
+  /* Make the UberEats / DoorDash logos larger (height controlled elsewhere) */
   .info-card-logo {
-    /*max-height: 120px; */
+    /* max-height tweak handled at base; keep here if needed */
   }
 
   /* Increase headline + spacing inside promo card */
   .info-card-title {
-    font-size: 3rem;      /* was 2.2rem */
+    font-size: 3rem;
   }
 
   .info-card-subtitle {
-    font-size: 2rem;      /* was 1.4rem */
+    font-size: 2rem;
   }
 
   .info-card {
-    padding: 32px 36px;   /* more interior space */
+    padding: 32px 36px;
   }
 
   /* Increase the “family owned” image on the right column */
   .menu-hero-image,
   .hero-photo {
-    max-height: 380px; /* was ~220px */
+    max-height: 380px;
   }
 
   /* Make the outer promo card taller / more balanced */
   .menu-items-main {
     justify-content: flex-start;
-    gap: 32px;            /* add vertical spacing between blocks */
+    gap: 32px;
   }
 
   /* Improve image enlargement for custom hero-photo classes */
@@ -73,21 +85,14 @@ body {
   }
 }
 
-
-/* Very big (4K, etc.) – bump more */
+/* Very big (4K, etc.) – global bump */
 @media (min-width: 2200px) {
   :root {
-    font-size: 32px; /* +50% vs base */
+    font-size: 32px; /* keep your existing 4K bump */
   }
 }
 
-@font-face {
-  font-family: "BD_Cartoon_Shout";
-  src: url("/fonts/BD_Cartoon_Shout.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
+/* ========== LAYOUT ========== */
 
 .screen-root {
   text-transform: uppercase;
@@ -129,14 +134,21 @@ body {
 .menu-board {
   display: flex;
   flex-direction: column;
-  min-height: 0; /* important so flex children can shrink if needed */
+  min-height: 0;
 }
+
+/* ========== HEADER + ROWS ========== */
 
 .column-header {
   background: var(--rk-header-bg, #00cb31);
   color: var(--rk-header-text, #ffffff);
   border: 2px solid var(--rk-header-border, #000000);
-  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000,
+     0  2px 0 rgba(0, 0, 0, 0.5);
 }
 
 .menu-header {
@@ -148,8 +160,15 @@ body {
   border: 3px solid var(--rk-header-border, #000000);
   text-transform: uppercase;
   letter-spacing: 2px;
-  font-size: 4rem;
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+  font-size: 3.2rem;
+  font-family: "BD_Cartoon_Shout", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000,
+     2px  2px 0 rgba(0, 0, 0, 0.5);
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
 }
 
@@ -166,27 +185,32 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;  /* this gives you the top to bottom fill */
+  justify-content: space-evenly; /* fill vertical space */
 }
 
 /* footer area – noticeCard / socialCard etc. */
 .menu-items-footer {
   margin-top: 18px;
   display: flex;
-  justify-content: flex-end; /* keep block in bottom right corner */
+  justify-content: flex-end;
   padding-right: 8px;
 }
 
-/* Rows themselves no longer need bottom margin, spacing comes from flex */
+/* Rows */
 .menu-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: baseline;
   gap: 8px;
   margin-bottom: 0;
-  font-size: 2.35rem;
+  font-size: 2rem;
   font-weight: 700;
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000,
+     2px  2px 0 rgba(0, 0, 0, 0.35);
 }
 
 .menu-row-label {
@@ -201,39 +225,16 @@ body {
   color: var(--rk-price-text, #ffffff);
 }
 
-/* Empty state still centers nicely when no items */
+/* Empty state */
 .empty-state {
   text-align: center;
   margin-top: 0;
   font-size: 1.25rem;
   color: #e4f0ff;
-  flex: 1;   /* center it vertically when inside .menu-items */
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-/* Old hero row if you ever use .menu-hero */
-.menu-hero {
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  gap: 16px;
-  height: 210px;
-  margin-bottom: 12px;
-}
-
-/* Shared hero image base for any hero images */
-.menu-hero-image,
-.hero-photo {
-  display: block;
-  max-width: 100%;
-  max-height: 220px;
-  height: auto;
-  object-fit: contain;
-  border-radius: 12px;
-  transform-origin: center bottom;
-  transition: transform 0.2s ease-out;
 }
 
 /* Paragraph copy blocks */
@@ -242,7 +243,12 @@ body {
   font-size: 2.1rem;
   font-weight: 700;
   text-transform: uppercase;
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000,
+     2px  2px 0 rgba(0, 0, 0, 0.35);
   margin-bottom: 8px;
 }
 
@@ -268,8 +274,13 @@ body {
   background: #00cb31;
   text-align: center;
   text-transform: uppercase;
-  font-size: 3.2rem;
-  text-shadow: 2px 2px 0 #000;
+  font-size: 1.9rem;
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000,
+     2px  2px 0 #000;
 }
 
 .menu-toppings-row {
@@ -281,21 +292,95 @@ body {
   font-size: 2.1rem;
   font-weight: 700;
   text-transform: uppercase;
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000,
+     2px  2px 0 rgba(0, 0, 0, 0.35);
 }
 
-/* Social Media & Coke */
+/* Make sure menu text uses BD_Cartoon_Shout */
+.menu-row-label,
+.menu-row-price,
+.menu-subheader {
+  font-family: "BD_Cartoon_Shout", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+/* ========== HERO IMAGES ========== */
+
+/* Old hero row if you ever use .menu-hero */
+.menu-hero {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 16px;
+  height: 210px;
+  margin-bottom: 12px;
+}
+
+/* Shared hero image base for any hero images */
+.menu-hero-image,
+.hero-photo {
+  display: block;
+  max-width: 100%;
+  max-height: 220px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  transform-origin: center bottom;
+  transition: transform 0.2s ease-out;
+}
+
+/* Hero strip for top row images on SIDES board etc */
+.hero-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 16px 48px 12px;
+  gap: 32px;
+}
+
+/* Per image positional tuning */
+
+/* LOBSTER ROLL */
+.hero-photo-left {
+  max-width: 260px;
+  transform: translate(-10px, 0px) scale(1.0);
+}
+
+/* RINGS or FRIES */
+.hero-photo-rings {
+  max-width: 220px;
+  transform: translate(0px, 8px) scale(0.96);
+}
+
+/* CLAMS */
+.hero-photo-clams {
+  max-width: 260px;
+  transform: translate(6px, -4px) scale(0.98);
+}
+
+/* KID PHOTO */
+.hero-photo-kid {
+  max-width: 160px;
+  border-radius: 24px;
+  transform: translate(0px, -6px) scale(1.05);
+}
+
+/* ========== SOCIAL MEDIA & COKE ========== */
 
 .social-card {
-  margin-top: auto;      /* stays at bottom of the column */
+  margin-top: auto;
   max-width: 100%;
 }
 
 /* Row that holds both images */
 .social-card-inner {
   display: flex;
-  align-items: center;    /* vertically center both */
-  justify-content: center; /* center them within the row */
+  align-items: center;
+  justify-content: center;
   gap: 18px;
 }
 
@@ -316,10 +401,10 @@ body {
   filter: drop-shadow(4px 4px 0 rgba(0, 0, 0, 0.45));
 }
 
-/* Food Safety Notice */
+/* ========== FOOD SAFETY NOTICE ========== */
 
 .notice-card {
-  margin-top: auto;              /* push to bottom of the column */
+  margin-top: auto;
   align-self: stretch;
   padding: 18px 24px;
   border-radius: 20px;
@@ -348,9 +433,7 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* Info / promo cards on screen 8 */
-
-/* Info / promo cards on screen 8 */
+/* ========== INFO / PROMO CARDS ON SCREEN 8 ========== */
 
 .info-card {
   margin-top: 18px;
@@ -380,16 +463,16 @@ body {
 
 /* Crossfade image area */
 .info-card-images {
-  display: grid;             /* stack all images on top of each other */
-  place-items: center;       /* center them nicely */
+  display: grid;
+  place-items: center;
   gap: 12px;
-  min-height: 300px;         /* keeps the block from shrinking between slides */
+  min-height: 300px;
 }
 
 /* Slider image - stacked */
 .info-card-image {
-  grid-area: 1 / 1;          /* all images share the same grid cell */
-  max-height: clamp(400px, 38vh, 620px);
+  grid-area: 1 / 1;
+  max-height: clamp(450px, 45vh, 460px);
   width: auto;
   object-fit: contain;
   border-radius: 12px;
@@ -446,44 +529,8 @@ body {
   }
 }
 
-/* Hero strip for top row images on SIDES board etc */
+/* ========== SNOW OVERLAY ========== */
 
-.hero-strip {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: 16px 48px 12px;
-  gap: 32px;
-}
-
-/* Per image positional tuning – tweak translate and scale to taste */
-
-/* LOBSTER ROLL */
-.hero-photo-left {
-  max-width: 260px;
-  transform: translate(-10px, 0px) scale(1.0);
-}
-
-/* RINGS or FRIES */
-.hero-photo-rings {
-  max-width: 220px;
-  transform: translate(0px, 8px) scale(0.96);
-}
-
-/* CLAMS */
-.hero-photo-clams {
-  max-width: 260px;
-  transform: translate(6px, -4px) scale(0.98);
-}
-
-/* KID PHOTO */
-.hero-photo-kid {
-  max-width: 160px;
-  border-radius: 24px;
-  transform: translate(0px, -6px) scale(1.05);
-}
-
-/* Snow overlay */
 .snow-overlay {
   position: fixed;
   inset: 0;
