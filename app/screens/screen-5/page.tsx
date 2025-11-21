@@ -186,8 +186,8 @@ export default function Screen5Page() {
               alt=" "
             />
             <img
-              className="hero-photo hero-photo-fries"
-              src="/img/sides-fries.png"
+              className="hero-photo hero-photo-chickenfingers"
+              src="/img/sandwiches-chickenfingers.png"
               alt=" "
             />
             <img
