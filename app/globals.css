@@ -56,7 +56,7 @@ body {
   }
 
   .info-card-subtitle {
-    font-size: 2rem;
+    font-size: rem;
   }
 
   .info-card {
@@ -387,7 +387,7 @@ body {
 /* Follow us panel */
 .social-card-image {
   display: block;
-  max-height: clamp(130px, 18vh, 190px);
+  max-height: clamp(150px, 22vh, 250px);
   width: auto;
   border-radius: 18px;
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
@@ -396,7 +396,7 @@ body {
 /* Coke logo – same height as panel */
 .social-card-logo {
   display: block;
-  max-height: clamp(130px, 18vh, 190px);
+  max-height: clamp(150px, 22vh, 250px);
   width: auto;
   filter: drop-shadow(4px 4px 0 rgba(0, 0, 0, 0.45));
 }
@@ -418,7 +418,7 @@ body {
 }
 
 .notice-card-main {
-  font-size: 1.4rem;
+  font-size: .7rem;
   font-weight: 800;
   text-align: center;
   text-transform: uppercase;
@@ -427,7 +427,7 @@ body {
 }
 
 .notice-card-sub {
-  font-size: 1rem;
+  font-size: .4rem;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -467,8 +467,7 @@ body {
 .info-card-images {
   position: relative;
   width: 100%;
-  /* slightly shorter so it doesn't hit the card bottom */
-  height: min(42vh, 750px);   /* was 55vh / 900px */
+  min-height: 850px;
   overflow: hidden;
 
   display: flex;
@@ -477,9 +476,6 @@ body {
 
   margin-top: 0.75rem;
 }
-
-/* Each image sits on top of each other and fades */
-
 
 /* Active slider image */
 .info-card-image.is-active {
@@ -493,19 +489,24 @@ body {
   position: absolute;
   inset: 0;
   width: 100%;
-  height: 100%;
-  object-fit: contain;        /* <- key change; was cover */
-  object-position: center;    /* keep it centered vertically */
+  height: 100% !important;   /* fight any global img rules */
+  object-fit: contain;
+  object-position: center;
   border-radius: 16px;
-
   opacity: 0;
   transform: scale(1.02);
   transition: opacity 1.8s ease-in-out, transform 1.8s ease-in-out;
 }
 
+/* Active slider image */
 .info-card-image.is-active {
   opacity: 1;
   transform: scale(1);
+}
+
+img.info-card-image {
+  max-width: none !important;
+  max-height: none !important;
 }
 
 .info-card-body {
