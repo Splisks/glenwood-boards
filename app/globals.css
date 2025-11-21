@@ -176,7 +176,7 @@ body {
 /* This area will stretch and distribute the rows */
 .menu-items {
   margin-top: 18px;
-  padding: 12px 10px;
+  padding: 12px 20px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -193,7 +193,7 @@ body {
 .menu-items-footer {
   margin-top: 18px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: left;
   padding-right: 8px;
 }
 
@@ -317,7 +317,7 @@ body {
   justify-content: center;
   align-items: flex-end;
   gap: 16px;
-  height: 210px;
+  height: 400px;
   margin-bottom: 12px;
 }
 
@@ -326,7 +326,7 @@ body {
 .hero-photo {
   display: block;
   max-width: 100%;
-  max-height: 220px;
+  max-height: 400px;
   height: auto;
   object-fit: contain;
   border-radius: 12px;
@@ -347,14 +347,12 @@ body {
 
 /* LOBSTER ROLL */
 .hero-photo-left {
-  max-width: 260px;
   transform: translate(-10px, 0px) scale(1.0);
 }
 
 /* RINGS or FRIES */
 .hero-photo-rings {
-  max-width: 220px;
-  transform: translate(0px, 8px) scale(0.96);
+  transform: translate(0px, 8px) scale(1.1);
 }
 
 /* CLAMS */
@@ -365,7 +363,6 @@ body {
 
 /* KID PHOTO */
 .hero-photo-kid {
-  max-width: 160px;
   border-radius: 24px;
   transform: translate(0px, -6px) scale(1.05);
 }
@@ -416,6 +413,7 @@ body {
   gap: 6px;
   background: var(--rk-notice-bg, #007bff);
   color: var(--rk-notice-text, #fff);
+  max-width: 750px;
 }
 
 .notice-card-main {
@@ -470,11 +468,9 @@ body {
   width: 100%;
   min-height: 850px;
   overflow: hidden;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   margin-top: 0.75rem;
 }
 
