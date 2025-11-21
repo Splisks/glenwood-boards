@@ -221,7 +221,7 @@ export default function Screen1Page() {
                 </div>
               )}
 
-              <div className="menu-items-footer">
+              <div className="menu-items-footer menu-items-footer-screen1">
                 <div
                   className="notice-card"
                   style={{

@@ -197,6 +197,10 @@ body {
   padding-right: 8px;
 }
 
+.menu-items-footer-screen1 {
+  justify-content: right !important;
+}
+
 /* Rows */
 .menu-row {
   display: grid;
@@ -410,7 +414,6 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 6px;
   background: var(--rk-notice-bg, #007bff);
   color: var(--rk-notice-text, #fff);
   max-width: 750px;
@@ -559,7 +562,7 @@ img.info-card-image {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  z-index: 30; /* over content, under any modals if you ever have them */
+  z-index: 30;
 }
 
 .holiday-icon {
@@ -574,14 +577,17 @@ img.info-card-image {
 
 @keyframes holiday-fall {
   0% {
-    transform: translate3d(0, -100%, 0) rotate(0deg);
+    transform: translate3d(0, -120%, 0);
     opacity: 0;
   }
   10% {
     opacity: 1;
   }
+  90% {
+    opacity: 1;
+  }
   100% {
-    transform: translate3d(0, 120vh, 0) rotate(360deg);
+    transform: translate3d(0, 130vh, 0);
     opacity: 0;
   }
 }
@@ -593,7 +599,7 @@ img.info-card-image {
   inset: 0;
   pointer-events: none;
   overflow: hidden;
-  z-index: 50; /* above content, below any modals */
+  z-index: 50;
 }
 
 .snowflake {
@@ -606,18 +612,19 @@ img.info-card-image {
   animation-iteration-count: infinite;
 }
 
-/* simple falling animation */
 @keyframes snow-fall {
   0% {
-    transform: translate3d(0, -100%, 0);
+    transform: translate3d(0, -120%, 0);
     opacity: 0;
   }
   10% {
     opacity: 1;
   }
+  90% {
+    opacity: 1;
+  }
   100% {
-    transform: translate3d(0, 110vh, 0);
+    transform: translate3d(0, 130vh, 0);
     opacity: 0;
   }
 }
-

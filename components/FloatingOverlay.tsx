@@ -43,7 +43,8 @@ export function FloatingOverlay({
         id: i,
         left: `${Math.random() * 100}%`,
         duration: minDuration + Math.random() * span,
-        delay: Math.random() * maxDuration,
+        // 👇 negative delay here too
+        delay: -(Math.random() * maxDuration),
         size: minSize + Math.random() * sizeSpan,
         emoji,
       });

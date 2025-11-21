@@ -6,7 +6,7 @@ import { EmojiOverlay } from "./EmojiOverlay";
 export function ThanksgivingLeavesOverlay() {
   return (
     <EmojiOverlay
-      emojis={["🍂", "🍁", "🌾", "🧡"]}
+      emojis={["🍂", "🍂", "🍁", "🍁"]}
       count={28}
       minDuration={10}
       maxDuration={22}

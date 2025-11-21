@@ -41,7 +41,8 @@ export function EmojiOverlay({
         id: i,
         left: `${Math.random() * 100}%`,
         duration: minDuration + Math.random() * durSpan,
-        delay: Math.random() * maxDuration,
+        // 👇 negative delay = animation is already in progress
+        delay: -(Math.random() * maxDuration),
         size: minSize + Math.random() * sizeSpan,
         emoji,
       });
@@ -49,7 +50,6 @@ export function EmojiOverlay({
     return arr;
   }, [emojis, count, minDuration, maxDuration, minSize, maxSize]);
 
-  // IMPORTANT: use your existing snow-overlay / snowflake classes
   return (
     <div className="snow-overlay">
       {particles.map((flake) => (
