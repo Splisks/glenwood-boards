@@ -191,6 +191,11 @@ export default function Screen5Page() {
               alt=" "
             />
             <img
+              className="hero-photo hero-photo-coleslaw"
+              src="/img/sides-coleslaw.png"
+              alt=" "
+            />
+            <img
               className="hero-photo hero-photo-hotdogs"
               src="/img/hotdogs-hotdogs.png"
               alt=" "

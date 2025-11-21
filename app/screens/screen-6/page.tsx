@@ -172,6 +172,11 @@ export default function Screen6Page() {
               alt=" "
             />
             <img
+              className="hero-photo hero-photo-blt"
+              src="/img/sandwiches-blt.png"
+              alt=" "
+            />
+            <img
               className="hero-photo hero-photo-burger"
               src="/img/sides-rings.png"
               alt=" "
