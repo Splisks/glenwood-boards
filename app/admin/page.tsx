@@ -320,27 +320,27 @@ export default function AdminPage() {
           </p>
         </div>
         {/* Logout button */}
-          <button
-            type="button"
-            onClick={() => signOut({ callbackUrl: "/" })}
-            className="admin-logout-btn"
-            style={{
-              padding: "0.35rem 0.9rem",
-              borderRadius: 999,
-              border: "none",
-              fontSize: "0.8rem",
-              fontWeight: 600,
-              cursor: "pointer",
-              background: "rgba(15,23,42,0.9)",
-              color: "#e5e7eb",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.35)",
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-              whiteSpace: "nowrap",
-            }}
-          >
-            Log out
-          </button>
+        <button
+          type="button"
+          onClick={() => signOut({ callbackUrl: "/" })}
+          className="admin-logout-btn"
+          style={{
+            padding: "0.35rem 0.9rem",
+            borderRadius: 999,
+            border: "none",
+            fontSize: "0.8rem",
+            fontWeight: 600,
+            cursor: "pointer",
+            background: "rgba(15,23,42,0.9)",
+            color: "#e5e7eb",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.35)",
+            textTransform: "uppercase",
+            letterSpacing: "0.08em",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Log out
+        </button>
       </header>
 
       {/* Theme Admin card */}
@@ -356,7 +356,7 @@ export default function AdminPage() {
           textAlign: "center",
         }}
       >
-        {/* Theme section header with toggle */}
+        {/* Theme section header with toggle - now clickable row */}
         <div
           className="admin-theme-header"
           style={{
@@ -365,6 +365,15 @@ export default function AdminPage() {
             justifyContent: "space-between",
             gap: "0.75rem",
             marginBottom: isThemeOpen ? "0.25rem" : 0,
+            cursor: "pointer",
+          }}
+          onClick={() => setIsThemeOpen((v) => !v)}
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setIsThemeOpen((v) => !v);
+            }
           }}
         >
           <h2
@@ -381,8 +390,13 @@ export default function AdminPage() {
           </h2>
           <button
             type="button"
-            onClick={() => setIsThemeOpen((v) => !v)}
-            aria-label={isThemeOpen ? "Collapse theme panel" : "Expand theme panel"}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsThemeOpen((v) => !v);
+            }}
+            aria-label={
+              isThemeOpen ? "Collapse theme panel" : "Expand theme panel"
+            }
             className="admin-toggle-btn"
             style={{
               width: 28,
@@ -422,9 +436,9 @@ export default function AdminPage() {
                 textTransform: "none",
               }}
             >
-              Themes can be automatically scheduled throughout the year or applied
-              manually. Manually selecting a theme will override the automatic
-              schedule until reset to the default theme.
+              Themes can be automatically scheduled throughout the year or
+              applied manually. Manually selecting a theme will override the
+              automatic schedule until reset to the default theme.
             </p>
 
             <div
@@ -620,6 +634,7 @@ export default function AdminPage() {
             );
 
             const open = isSectionOpen(sectionKey);
+            const sectionLabel = sectionKey.replace(/_/g, " ");
 
             return (
               <div
@@ -631,7 +646,7 @@ export default function AdminPage() {
                   borderRadius: "0.75rem",
                 }}
               >
-                {/* Category header with toggle */}
+                {/* Category header with toggle - now clickable row */}
                 <div
                   className="admin-section-header"
                   style={{
@@ -640,6 +655,15 @@ export default function AdminPage() {
                     justifyContent: "space-between",
                     gap: "0.75rem",
                     marginBottom: open ? "0.75rem" : 0,
+                    cursor: "pointer",
+                  }}
+                  onClick={() => toggleSection(sectionKey)}
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      toggleSection(sectionKey);
+                    }
                   }}
                 >
                   <h2
@@ -652,16 +676,19 @@ export default function AdminPage() {
                       flex: 1,
                     }}
                   >
-                    {sectionKey.replace(/_/g, " ")}
+                    {sectionLabel}
                   </h2>
 
                   <button
                     type="button"
-                    onClick={() => toggleSection(sectionKey)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleSection(sectionKey);
+                    }}
                     aria-label={
                       open
-                        ? `Collapse ${sectionKey.replace(/_/g, " ")} section`
-                        : `Expand ${sectionKey.replace(/_/g, " ")} section`
+                        ? `Collapse ${sectionLabel} section`
+                        : `Expand ${sectionLabel} section`
                     }
                     className="admin-toggle-btn"
                     style={{

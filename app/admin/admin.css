@@ -304,3 +304,8 @@ button {
     white-space: nowrap;
   }
 }
+
+.admin-theme-header,
+.admin-section-header {
+  cursor: pointer;
+}
